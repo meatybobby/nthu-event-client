@@ -13,6 +13,7 @@ import android.widget.Toast;
 import java.util.Map;
 
 import softwarestudio.douglas.nthu_event.client.model.Session;
+import softwarestudio.douglas.nthu_event.client.model.User;
 import softwarestudio.douglas.nthu_event.client.service.rest.RestManager;
 import softwarestudio.douglas.nthu_event.client.service.rest.facebook.FacebookManager;
 
@@ -153,7 +154,48 @@ public class LoginActivity extends Activity {
     }
 
     private void proceedToRegister() {
+        final User u = new User(fbAccessToken);
 
+        Log.d(TAG, "Posting CampusHunt session: " + u);
+
+        restMgr.postResource(User.class, u, new RestManager.PostResourceListener() {
+
+            @Override
+            public void onResponse(int code, Map<String, String> headers) {
+
+                Log.d(TAG, "CampusHunt session created. Code: " + code);
+
+                proceedToMain();
+
+            }
+
+            @Override
+            public void onRedirect(int code, Map<String, String> headers,
+                                   String url) {
+                onError(null, null, code, headers);
+            }
+
+            @Override
+            public void onError(String message, Throwable cause, int code,
+                                Map<String, String> headers) {
+
+                // New user
+                if (code == 404) {
+
+                    Log.d(TAG, "New user!");
+                    proceedToRegister();
+
+                } else {
+
+                    Log.e(TAG, "Cannot create CampusHunt session. Message: " + message, cause);
+                    Toast.makeText(LoginActivity.this, getString(R.string.info_server_error),
+                            Toast.LENGTH_SHORT).show();
+
+                    progressDialog.dismiss();
+
+                }
+            }
+        }, TAG);
 
     }
 

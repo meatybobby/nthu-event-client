@@ -49,7 +49,7 @@ public class FacebookManager {
      * for more permissions.
      */
     public void login(Activity activity, final LoginListener listener) {
-        Session.openActiveSession(activity, true, Arrays.asList("email", "user_birthday"),
+        Session.openActiveSession(activity, true,Arrays.asList("public_profile"),
                 new Session.StatusCallback() {
                     @Override
                     public void call(final Session session, SessionState state, Exception e) {

@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/NTHU_Event.iml" filepath="$PROJECT_DIR$/NTHU_Event.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/nthu_event_client.iml" filepath="$PROJECT_DIR$/nthu_event_client.iml" />
     </modules>
   </component>
 </project>
