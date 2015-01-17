@@ -1,10 +1,18 @@
 package softwarestudio.douglas.nthu_event.client;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import softwarestudio.douglas.nthu_event.client.model.Event;
+import softwarestudio.douglas.nthu_event.client.service.rest.RestManager;
 
 
 public class ShowActivity extends Activity {
@@ -13,6 +21,8 @@ public class ShowActivity extends Activity {
     private TextView eventPlace;
     private TextView eventContent;
     private TextView numOfPeople;
+
+    private RestManager restMgr;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,7 +56,35 @@ public class ShowActivity extends Activity {
             }
         });
 
+        Intent intent = this.getIntent();
+        Bundle bundle = intent.getExtras();
+        String eventId = bundle.getString("EventId");
+        getEventById(eventId);
+    }
 
+    private void getEventById(String eventId){
+        Map<String, String> header = new HashMap<>();
+
+        restMgr.getResource(Event.class, eventId, new RestManager.GetResourceListener<Event>() {
+            @Override
+            public void onResponse(int code, Map<String, String> headers, Event resource) {
+                eventName.setText(resource.getTitle());
+                eventPlace.setText(resource.getLocation());
+                eventContent.setText(resource.getDescription());
+            }
+
+            @Override
+            public void onRedirect(int code, Map<String, String> headers, String url) {
+
+            }
+
+            @Override
+            public void onError(String message, Throwable cause, int code, Map<String, String> headers) {
+
+                Toast.makeText(ShowActivity.this, "無法讀取活動",
+                        Toast.LENGTH_SHORT).show();
+            }
+        }, null);
     }
 
     private void joinEvent(){

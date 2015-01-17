@@ -73,11 +73,11 @@ public class AddActivity extends Activity {
             @Override
             public void onClick(View v) {
                 Event e=new Event();
-                e.title=eventNameEdt.getText().toString();
-                e.description=eventContentEdt.getText().toString();
-                e.time=getTime();
-                e.location=eventPlaceEdt.toString();
-                e.tag=tag;
+                e.setTitle(eventNameEdt.getText().toString());
+                e.setDescription(eventContentEdt.getText().toString());
+                e.setTime(getTime());
+                e.setLocation(eventPlaceEdt.toString());
+                e.setTag(tag);
                 postEvent(e);
             }
         });

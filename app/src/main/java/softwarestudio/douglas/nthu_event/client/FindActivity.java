@@ -33,17 +33,20 @@ import softwarestudio.douglas.nthu_event.client.service.rest.RestManager;
 
 public class FindActivity extends FragmentActivity implements ActionBar.TabListener {
 
-
     AppSectionsPagerAdapter mAppSectionsPagerAdapter;
-
-
     ViewPager mViewPager;
     private static String[] tabsName = {"最新", "最近", "最熱門", "分類"};
 
+    private RestManager mRestMgr;
+    public static ArrayList<Event> mEventList = new ArrayList<Event>();
+    /*宣告成static >> 為了讓fragment能存取*/
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_find);
+
+        mRestMgr = RestManager.getInstance(getApplication());
+        /* get 一次所有活動，在不同fragment再分別排序 */
 
 
         mAppSectionsPagerAdapter = new AppSectionsPagerAdapter(getSupportFragmentManager(),tabsName.length);
@@ -67,6 +70,8 @@ public class FindActivity extends FragmentActivity implements ActionBar.TabListe
                             .setText(tabsName[i])
                             .setTabListener(this));
         }
+
+        getEvents();//一次抓完所有Event 不同fragment分別再排序
 
     }
 
@@ -127,64 +132,18 @@ public class FindActivity extends FragmentActivity implements ActionBar.TabListe
     }
 
 
+    private void getEvents(){
 
-    /**
-     * A dummy fragment representing a section of the app, but that simply displays dummy text.
-     */
-    public static class EventSectionFragment extends ListFragment {
-        private ArrayList<Event> mEventList = new ArrayList<Event>();
-        private ListView mListView;
-        private EventAdapter mEventAdapter;
-        private RestManager mRestMgr;
-
-        public static final String ARG_SECTION_NUMBER = "section_number";
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_event_list, container, false);
-            Bundle args = getArguments();
-            /*之後用拿到的參數來判斷要如何排序Events*/
-            String txt = tabsName[args.getInt(ARG_SECTION_NUMBER)];
-
-            mRestMgr = RestManager.getInstance(getActivity().getApplication());
-
-            mListView = (ListView) rootView.findViewById(R.id.list_events);
-            mEventAdapter = new EventAdapter(getActivity(), mEventList);
-            mListView.setAdapter(mEventAdapter);
-
-            getEvents(args.getInt(ARG_SECTION_NUMBER));
-
-            mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    //TODO 前往單一活動頁面
-                }
-            });
-
-            return rootView;
-        }
-        private void getEvents(int sectionNum){
-           /*根據sectionNum 決定排序events的方式*/
-            /*以下還有bug*/
-           /* Map<String, String> params = new HashMap<String, String>();
+            Map<String, String> params = new HashMap<String, String>();
             mRestMgr.listResource(Event.class, params, new RestManager.ListResourceListener<Event>() {
                 @Override
                 public void onResponse(int code, Map<String, String> headers,
                                        List<Event> resources) {
                     if (resources != null) {
-
                         mEventList.clear();
-                        for(Event m : resources){
-                            mEventList.add(m);
+                        for(Event e : resources){
+                            mEventList.add(e);
                         }
-
-                        getActivity().runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                mEventAdapter.notifyDataSetChanged();
-                            }
-                        });
                     }
                 }
 
@@ -198,7 +157,61 @@ public class FindActivity extends FragmentActivity implements ActionBar.TabListe
                                     Map<String, String> headers) {
                     Log.d(this.getClass().getSimpleName(), "" + code + ": " + message);
                 }
-            }, null);*/
+            }, null);
+    }
+    /**
+     * A dummy fragment representing a section of the app, but that simply displays dummy text.
+     */
+    public static class EventSectionFragment extends Fragment {
+
+        private ListView mListView;
+        private EventAdapter mEventAdapter;
+
+        public static final String ARG_SECTION_NUMBER = "section_number";
+
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                                 Bundle savedInstanceState) {
+            View rootView = inflater.inflate(R.layout.fragment_event_list, container, false);
+            Bundle args = getArguments();
+            /*之後用拿到的參數來判斷要如何排序Events*/
+            String txt = tabsName[args.getInt(ARG_SECTION_NUMBER)];
+
+
+            mListView = (ListView) rootView.findViewById(R.id.list_events);
+            mEventAdapter = new EventAdapter(getActivity(), mEventList);
+            mListView.setAdapter(mEventAdapter);
+
+            mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    //TODO 前往單一活動頁面
+
+                    Intent intent = new Intent(getActivity(), ShowActivity.class);
+                    Event event = (Event) mEventAdapter.getItem(position);
+
+                    /*Event class有implement Serializable 所以可以用intent傳*/
+                    Bundle bundle = new Bundle();
+                    bundle.putString("EventId", event.getId());
+                    intent.putExtras(bundle);
+                    startActivity(intent);
+                }
+            });
+
+            sortEvents(args.getInt(ARG_SECTION_NUMBER));
+
+            return rootView;
         }
+        private void sortEvents(int sectionNum){
+            //TODO 根據sectionNum 排序 mEventList
+
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    mEventAdapter.notifyDataSetChanged();
+                }
+            });
+        }
+
     }
 }

@@ -18,22 +18,22 @@ import softwarestudio.douglas.nthu_event.client.model.Event;
  */
 public class EventAdapter extends BaseAdapter {
 
-    private List<Event> mMessageList;
+    private List<Event> mEventList;
     private LayoutInflater mMyInflater;
 
     public EventAdapter(Context c, ArrayList<Event> list) {
-        this.mMessageList = list;
+        this.mEventList = list;
         mMyInflater = LayoutInflater.from(c);
     }
 
     @Override
     public int getCount() {
-        return mMessageList.size();
+        return mEventList.size();
     }
 
     @Override
     public Object getItem(int position) {
-        return mMessageList.get(position);
+        return mEventList.get(position);
     }
 
     @Override
@@ -42,20 +42,20 @@ public class EventAdapter extends BaseAdapter {
     }
 
     public void setList(ArrayList<Event> list) {
-        this.mMessageList = list;
+        this.mEventList = list;
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
         convertView = mMyInflater.inflate(R.layout.event_item, null);
-        Event message = mMessageList.get(position);
+        Event event = mEventList.get(position);
 
-        TextView userTxt = (TextView) convertView.findViewById(R.id.txt_name);
+        TextView titleTxt = (TextView) convertView.findViewById(R.id.txt_title);
         TextView contentTxt = (TextView) convertView.findViewById(R.id.txt_content);
 
-        //userTxt.setText(message.getUser());
-        //contentTxt.setText(message.getContent());
+        titleTxt.setText(event.getTitle());
+        contentTxt.setText(event.getDescription());
 
         return convertView;
     }
