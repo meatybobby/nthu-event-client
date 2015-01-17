@@ -11,6 +11,8 @@ import android.widget.Spinner;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.TextView;
 
+import softwarestudio.douglas.nthu_event.client.service.rest.RestManager;
+
 
 public class AddActivity extends Activity {
     private EditText eventNameEdt;
@@ -18,6 +20,7 @@ public class AddActivity extends Activity {
     private EditText eventPlaceEdt;
     private EditText eventContentEdt;
     private Button submitBtn;
+    private RestManager rstmgr;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,7 +30,7 @@ public class AddActivity extends Activity {
         eventPlaceEdt = (EditText) findViewById(R.id.location_txt);
         eventContentEdt = (EditText) findViewById(R.id.content_txt);
         submitBtn = (Button) findViewById(R.id.submitEventBtn);
-
+        rstmgr=RestManager.getInstance(this);
 
         Spinner spinner1 = (Spinner) findViewById(R.id.eventCat1);
         Spinner spinner2 = (Spinner) findViewById(R.id.eventCat2);
@@ -43,6 +46,12 @@ public class AddActivity extends Activity {
         adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner2.setAdapter(adapter2);
         spinner2.setOnItemSelectedListener(spnListener2);
+        submitBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                postEvent();
+            }
+        });
     }
 
 
@@ -72,4 +81,7 @@ public class AddActivity extends Activity {
                 }
 
             };
+    private void postEvent() {
+
+    }
 }
