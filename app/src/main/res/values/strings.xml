@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
+    <string name="rest_server_url">http://nthu-event-2014.appspot.com/</string>
     <string name="app_name">NTHU Event</string>
     <string name="action_settings">Settings</string>
     <string name="dummy_section_text">Section %1d is just a dummy section.</string>
