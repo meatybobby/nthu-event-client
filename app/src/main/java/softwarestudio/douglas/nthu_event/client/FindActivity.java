@@ -9,83 +9,65 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.ListFragment;
 import android.support.v4.view.ViewPager;
 import android.support.v4.app.NavUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import softwarestudio.douglas.nthu_event.client.adapter.EventAdapter;
+import softwarestudio.douglas.nthu_event.client.model.Event;
+import softwarestudio.douglas.nthu_event.client.service.rest.RestManager;
+
 public class FindActivity extends FragmentActivity implements ActionBar.TabListener {
 
-    /**
-     * The {@link android.support.v4.view.PagerAdapter} that will provide fragments for each of the
-     * three primary sections of the app. We use a {@link android.support.v4.app.FragmentPagerAdapter}
-     * derivative, which will keep every loaded fragment in memory. If this becomes too memory
-     * intensive, it may be best to switch to a {@link android.support.v4.app.FragmentStatePagerAdapter}.
-     */
+
     AppSectionsPagerAdapter mAppSectionsPagerAdapter;
 
-    /**
-     * The {@link ViewPager} that will display the three primary sections of the app, one at a
-     * time.
-     */
+
     ViewPager mViewPager;
     private static String[] tabsName = {"最新", "最近", "最熱門", "分類"};
+
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_find);
 
 
-
-        // Create the adapter that will return a fragment for each of the three primary sections
-        // of the app.
         mAppSectionsPagerAdapter = new AppSectionsPagerAdapter(getSupportFragmentManager(),tabsName.length);
 
-        // Set up the action bar.
         final ActionBar actionBar = getActionBar();
-
-
-        // Specify that the Home/Up button should not be enabled, since there is no hierarchical
-        // parent.
         actionBar.setHomeButtonEnabled(true);
-
-        // Specify that we will be displaying tabs in the action bar.
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
-        // Set up the ViewPager, attaching the adapter and setting up a listener for when the
-        // user swipes between sections.
         mViewPager = (ViewPager) findViewById(R.id.pager);
         mViewPager.setAdapter(mAppSectionsPagerAdapter);
         mViewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
             @Override
             public void onPageSelected(int position) {
-                // When swiping between different app sections, select the corresponding tab.
-                // We can also use ActionBar.Tab#select() to do this if we have a reference to the
-                // Tab.
                 actionBar.setSelectedNavigationItem(position);
             }
         });
 
-        // For each of the sections in the app, add a tab to the action bar.
-       /* for (int i = 0; i < mAppSectionsPagerAdapter.getCount(); i++) {
-            // Create a tab with text corresponding to the page title defined by the adapter.
-            // Also specify this Activity object, which implements the TabListener interface, as the
-            // listener for when this tab is selected.
-            actionBar.addTab(
-                    actionBar.newTab()
-                            .setText(mAppSectionsPagerAdapter.getPageTitle(i))
-                            .setTabListener(this));
-        }*/
         for(int i=0; i<mAppSectionsPagerAdapter.getCount(); i++){
             actionBar.addTab(
                     actionBar.newTab()
                             .setText(tabsName[i])
                             .setTabListener(this));
         }
+
     }
 
 
@@ -125,9 +107,9 @@ public class FindActivity extends FragmentActivity implements ActionBar.TabListe
 
                 default:
                     // The other sections of the app are dummy placeholders.
-                    Fragment fragment = new DummySectionFragment();
+                    Fragment fragment = new EventSectionFragment();
                     Bundle args = new Bundle();
-                    args.putInt(DummySectionFragment.ARG_SECTION_NUMBER, i);
+                    args.putInt(EventSectionFragment.ARG_SECTION_NUMBER, i);
                     fragment.setArguments(args);
                     return fragment;
             }
@@ -144,68 +126,79 @@ public class FindActivity extends FragmentActivity implements ActionBar.TabListe
         }
     }
 
-    /**
-     * A fragment that launches other parts of the demo application.
-     */
-    public static class LaunchpadSectionFragment extends Fragment {
 
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_section_launchpad, container, false);
-
-            // Demonstration of a collection-browsing activity.
-           /* rootView.findViewById(R.id.demo_collection_button)
-                    .setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            Intent intent = new Intent(getActivity(), CollectionDemoActivity.class);
-                            startActivity(intent);
-                        }
-                    });*/
-
-            // Demonstration of navigating to external activities.
-            /*rootView.findViewById(R.id.demo_external_activity)
-                    .setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            // Create an intent that asks the user to pick a photo, but using
-                            // FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET, ensures that relaunching
-                            // the application from the device home screen does not return
-                            // to the external activity.
-                            Intent externalActivityIntent = new Intent(Intent.ACTION_PICK);
-                            externalActivityIntent.setType("image/*");
-                            externalActivityIntent.addFlags(
-                                    Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
-                            startActivity(externalActivityIntent);
-                        }
-                    });*/
-
-            return rootView;
-        }
-    }
 
     /**
      * A dummy fragment representing a section of the app, but that simply displays dummy text.
      */
-    public static class DummySectionFragment extends Fragment {
+    public static class EventSectionFragment extends ListFragment {
+        private ArrayList<Event> mEventList = new ArrayList<Event>();
+        private ListView mListView;
+        private EventAdapter mEventAdapter;
+        private RestManager mRestMgr;
 
         public static final String ARG_SECTION_NUMBER = "section_number";
-        public static final String ARG_SECTION_CONTENT = "section_content";
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_section_dummy, container, false);
+            View rootView = inflater.inflate(R.layout.fragment_event_list, container, false);
             Bundle args = getArguments();
+            /*之後用拿到的參數來判斷要如何排序Events*/
             String txt = tabsName[args.getInt(ARG_SECTION_NUMBER)];
 
-           /* ((TextView) rootView.findViewById(android.R.id.text1)).setText(
-                    getString(R.string.dummy_section_text, args.getInt(ARG_SECTION_NUMBER)));*/
+            mRestMgr = RestManager.getInstance(getActivity().getApplication());
 
-            ((TextView) rootView.findViewById(android.R.id.text1)).setText(txt+"活動");
+            mListView = (ListView) rootView.findViewById(R.id.list_events);
+            mEventAdapter = new EventAdapter(getActivity(), mEventList);
+            mListView.setAdapter(mEventAdapter);
+
+            getEvents(args.getInt(ARG_SECTION_NUMBER));
+
+            mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    //TODO 前往單一活動頁面
+                }
+            });
 
             return rootView;
+        }
+        private void getEvents(int sectionNum){
+           /*根據sectionNum 決定排序events的方式*/
+            /*以下還有bug*/
+           /* Map<String, String> params = new HashMap<String, String>();
+            mRestMgr.listResource(Event.class, params, new RestManager.ListResourceListener<Event>() {
+                @Override
+                public void onResponse(int code, Map<String, String> headers,
+                                       List<Event> resources) {
+                    if (resources != null) {
+
+                        mEventList.clear();
+                        for(Event m : resources){
+                            mEventList.add(m);
+                        }
+
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                mEventAdapter.notifyDataSetChanged();
+                            }
+                        });
+                    }
+                }
+
+                @Override
+                public void onRedirect(int code, Map<String, String> headers, String url) {
+                    onError(null, null, code, headers);
+                }
+
+                @Override
+                public void onError(String message, Throwable cause, int code,
+                                    Map<String, String> headers) {
+                    Log.d(this.getClass().getSimpleName(), "" + code + ": " + message);
+                }
+            }, null);*/
         }
     }
 }

@@ -93,7 +93,7 @@ public class AddActivity extends Activity {
                     eventTimeEdt.setText( selectedHour + ":" + selectedMinute);
                 }
             }, hour, minute, false);//Yes 24 hour time
-            mTimePicker.setTitle("選擇時間");
+            mTimePicker.setTitle("選擇活動時間");
             mTimePicker.show();
         }
     };
