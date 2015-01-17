@@ -21,6 +21,7 @@ import org.w3c.dom.Text;
 
 import java.util.Calendar;
 import java.util.List;
+import java.util.Map;
 
 import softwarestudio.douglas.nthu_event.client.model.Event;
 import softwarestudio.douglas.nthu_event.client.service.rest.RestManager;
@@ -35,6 +36,7 @@ public class AddActivity extends Activity {
     private Button submitBtn;
     private Button chooseDateBtn;
     private RestManager rstmgr;
+    private String[] tag=new String[2];
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,11 +47,11 @@ public class AddActivity extends Activity {
         eventPlaceEdt = (EditText) findViewById(R.id.location_txt);
         eventContentEdt = (EditText) findViewById(R.id.content_txt);
         submitBtn = (Button) findViewById(R.id.submitEventBtn);
+        // chooseDateBtn = (Button) findViewById(R.id.btn_pickDate);
+
         rstmgr=RestManager.getInstance(this);
-       // chooseDateBtn = (Button) findViewById(R.id.btn_pickDate);
 
-
-        Spinner spinner1 = (Spinner) findViewById(R.id.eventCat1);
+        final Spinner spinner1 = (Spinner) findViewById(R.id.eventCat1);
         Spinner spinner2 = (Spinner) findViewById(R.id.eventCat2);
 
         ArrayAdapter<CharSequence> adapter1 = ArrayAdapter.createFromResource(this,
@@ -71,6 +73,11 @@ public class AddActivity extends Activity {
             @Override
             public void onClick(View v) {
                 Event e=new Event();
+                e.title=eventNameEdt.getText().toString();
+                e.description=eventContentEdt.getText().toString();
+                e.time=getTime();
+                e.location=eventPlaceEdt.toString();
+                e.tag=tag;
                 postEvent(e);
             }
         });
@@ -133,7 +140,7 @@ public class AddActivity extends Activity {
                 @Override
                 public void onItemSelected(AdapterView<?> parent, View view,
                                            int pos, long id) {
-                    String str = parent.getItemAtPosition(pos).toString();
+                    tag[0] = parent.getItemAtPosition(pos).toString();
                 }
                 @Override
                 public void onNothingSelected(AdapterView<?> parent) {
@@ -146,7 +153,7 @@ public class AddActivity extends Activity {
                 @Override
                 public void onItemSelected(AdapterView<?> parent, View view,
                                            int pos, long id) {
-                    String str = parent.getItemAtPosition(pos).toString();
+                    tag[1] = parent.getItemAtPosition(pos).toString();
                 }
                 @Override
                 public void onNothingSelected(AdapterView<?> parent) {
@@ -158,6 +165,28 @@ public class AddActivity extends Activity {
         return number <= 9 ? "0" + number : String.valueOf(number);
     }
     private void postEvent(Event e) {
+        rstmgr.postResource(Event.class,e,new RestManager.PostResourceListener() {
+            @Override
+            public void onResponse(int code, Map<String, String> headers) {
 
+            }
+
+            @Override
+            public void onRedirect(int code, Map<String, String> headers, String url) {
+
+            }
+
+            @Override
+            public void onError(String message, Throwable cause, int code, Map<String, String> headers) {
+
+            }
+        },null);
+    }
+    private long getTime() {
+        String[] d=eventDateEdt.getText().toString().split("/");
+        String[] t=eventTimeEdt.getText().toString().split(":");
+        Calendar calendar=Calendar.getInstance();
+        calendar.set(Integer.parseInt(d[0]),Integer.parseInt(d[1])-1,Integer.parseInt(d[2]),Integer.parseInt(d[0]),Integer.parseInt(d[1]));
+        return calendar.getTimeInMillis();
     }
 }
