@@ -1,16 +1,16 @@
 package softwarestudio.douglas.nthu_event.client.model;
 
-
 import softwarestudio.douglas.nthu_event.client.service.rest.model.Resource;
 
-public class Session extends Resource {
+public class User extends Resource {
 
-    public static Session currentSession;
     private String fbAccessToken;
 
-    public Session(String fbAccessToken){
+    public User(String fbAccessToken) {
         this.fbAccessToken = fbAccessToken;
     }
 
-    public static String getCollectionName() { return "session"; }
+    public static String getCollectionName() {
+        return "users";
+    }
 }
