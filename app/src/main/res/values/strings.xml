@@ -11,6 +11,9 @@
     <string name="my_page">個人中心</string>
     <string name="show_event">活動</string>
     <string name="submit">送出</string>
+    <string name="btn_login_with_facebook">用Facebook帳號登入</string>
+    <string name="info_wait">Please wait</string>
+    <string name="info_server_error">"Sorry, server is not available. Please try again later"</string>
     <string-array name="events_category1">
         <item>演講</item>
         <item>社團</item>
