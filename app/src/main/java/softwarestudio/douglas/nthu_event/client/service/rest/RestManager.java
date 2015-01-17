@@ -214,6 +214,33 @@ public class RestManager {
         }
     }
 
+    public <T extends Resource> void postUniversal(Class<T> cls,String url,final T resource,final PostResourceListener listener,
+                                                  String tag) {
+        try {
+            Log.d(TAG, "Posting resource to " + url + "...");
+            GsonRequest<T> req = new GsonRequest<T>(Request.Method.POST,
+                    url, null, resource, cls,
+                    new Response.Listener<GsonResponse<T>>() {
+                        @Override
+                        public void onResponse(GsonResponse<T> gRes) {
+                            Log.d(TAG, "Response: " + gRes);
+                            if (resource instanceof PostResource &&
+                                    200 <= gRes.getCode() && gRes.getCode() < 300 &&
+                                    gRes.getHeaders().get("Location") != null) {
+                                ((PostResource) resource).setId(
+                                        parseIdFromUrl(gRes.getHeaders().get("Location")));
+                            }
+                            if (listener != null)
+                                listener.onResponse(gRes.getCode(), gRes.getHeaders());
+                        }
+                    }, new RestErrorListener(listener));
+            req.setTag(tag);
+            reqQueue.add(req);
+        } catch (Exception e) {
+            listener.onError(e.getMessage(), e, 0, null);
+        }
+    }
+
     public <T extends Resource> void putResource(Class<T> cls, T resource,
                                                  final PutResourceListener listener, String tag,
                                                  Resource... parents) {
