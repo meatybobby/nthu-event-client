@@ -15,6 +15,11 @@ public class Event extends Resource implements Serializable {
     private String[] tag;
     private long time;
 
+
+
+    private long timeStamp;
+    private int joinNum;
+
     public String getTitle() {
         return title;
     }
@@ -51,6 +56,18 @@ public class Event extends Resource implements Serializable {
 
     public void setTime(long time) {
         this.time = time;
+    }
+    public int getJoinNum() {
+        return joinNum;
+    }
+    public void setJoinNum(int joinNum) {
+        this.joinNum = joinNum;
+    }
+    public long getTimeStamp() {
+        return timeStamp;
+    }
+    public void setTimeStamp(long timeStamp) {
+        this.timeStamp = timeStamp;
     }
 
 }
