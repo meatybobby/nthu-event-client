@@ -27,6 +27,9 @@ public class ShowActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_show);
+
+        restMgr =  RestManager.getInstance(getApplication());
+
         eventName = (TextView) findViewById(R.id.event_name);
         eventTime = (TextView) findViewById(R.id.event_time);
         eventPlace = (TextView) findViewById(R.id.event_place);
@@ -71,6 +74,7 @@ public class ShowActivity extends Activity {
                 eventName.setText(resource.getTitle());
                 eventPlace.setText(resource.getLocation());
                 eventContent.setText(resource.getDescription());
+                numOfPeople.setText(resource.getJoinNum());
             }
 
             @Override

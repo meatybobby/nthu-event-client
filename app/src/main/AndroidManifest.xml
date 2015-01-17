@@ -69,6 +69,15 @@
                 android:value="softwarestudio.douglas.nthu_event.client.FindActivity" />
         </activity>
 
+        <activity
+            android:name=".CommentActivity"
+            android:label="@string/show_event"
+            android:parentActivityName="softwarestudio.douglas.nthu_event.client.ShowActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="softwarestudio.douglas.nthu_event.client.ShowActivity" />
+        </activity>
+
 
 
 
