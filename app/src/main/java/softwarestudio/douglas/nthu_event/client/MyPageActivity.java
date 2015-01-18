@@ -22,7 +22,7 @@ public class MyPageActivity extends FragmentActivity implements ActionBar.TabLis
 
     AppSectionsPagerAdapter mAppSectionsPagerAdapter;
     ViewPager mViewPager;
-    private static String[] tabsName = {"參加的活動","舉辦的活動","收藏"};
+    private static String[] tabsName = {"參加的活動","舉辦的活動"/*,"收藏"*/};
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

@@ -16,6 +16,7 @@ import android.widget.Spinner;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import org.w3c.dom.Text;
 
@@ -168,7 +169,9 @@ public class AddActivity extends Activity {
         rstmgr.postResource(Event.class,e,new RestManager.PostResourceListener() {
             @Override
             public void onResponse(int code, Map<String, String> headers) {
-
+                Toast.makeText(AddActivity.this, "活動新增成功！",
+                        Toast.LENGTH_SHORT).show();
+                finish();
             }
 
             @Override
@@ -178,7 +181,14 @@ public class AddActivity extends Activity {
 
             @Override
             public void onError(String message, Throwable cause, int code, Map<String, String> headers) {
-
+                if(code==401){
+                    Toast.makeText(AddActivity.this, "新增失敗，請先登入帳號",
+                            Toast.LENGTH_SHORT).show();
+                }
+                else{
+                    Toast.makeText(AddActivity.this, "錯誤！",
+                            Toast.LENGTH_SHORT).show();
+                }
             }
         },null);
     }
