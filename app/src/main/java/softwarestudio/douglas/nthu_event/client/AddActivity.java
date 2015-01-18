@@ -2,6 +2,7 @@ package softwarestudio.douglas.nthu_event.client;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -20,15 +21,19 @@ import android.widget.Toast;
 
 import org.w3c.dom.Text;
 
+import java.sql.Time;
 import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 
 import softwarestudio.douglas.nthu_event.client.model.Event;
 import softwarestudio.douglas.nthu_event.client.service.rest.RestManager;
 
 
 public class AddActivity extends Activity {
+    public final static int UNSET_TIME = -1;
     private EditText eventNameEdt;
     private EditText eventDateEdt;
     private EditText eventPlaceEdt;
@@ -38,6 +43,10 @@ public class AddActivity extends Activity {
     private Button chooseDateBtn;
     private RestManager rstmgr;
     private String[] tag=new String[2];
+
+    private int hour, minute;
+
+    private ProgressDialog progressDialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,11 +77,24 @@ public class AddActivity extends Activity {
         spinner2.setOnItemSelectedListener(spnListener2);
 
         //chooseDateBtn.setOnClickListener(pickDateListener);
+        //hour = UNSET_TIME; minute = UNSET_TIME;
         eventDateEdt.setOnClickListener(pickDateListener);
+
+        /*設定時區*/
+        Calendar mcurrentTime = new GregorianCalendar( TimeZone.getTimeZone(getString(R.string.time_zone_id)) );
+        hour = mcurrentTime.get(Calendar.HOUR_OF_DAY) ;
+        minute = mcurrentTime.get(Calendar.MINUTE);
         eventTimeEdt.setOnClickListener(pickTimeListener);
+
         submitBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // Show progress
+                progressDialog = new ProgressDialog(AddActivity.this);
+                progressDialog.setMessage(getString(R.string.info_wait));
+                progressDialog.setCancelable(false);
+                progressDialog.show();
+
                 Event e=new Event();
                 e.setTitle(eventNameEdt.getText().toString());
                 e.setDescription(eventContentEdt.getText().toString());
@@ -84,34 +106,12 @@ public class AddActivity extends Activity {
         });
     }
 
-    /**時間選擇，確認、取消按鈕還要再加*/
-    private View.OnClickListener pickTimeListener
-            = new View.OnClickListener(){
-        @Override
-        public void onClick(View v) {
-            // TODO Auto-generated method stub
-            Calendar mcurrentTime = Calendar.getInstance();
-            int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
-            int minute = mcurrentTime.get(Calendar.MINUTE);
-            TimePickerDialog mTimePicker;
-
-            mTimePicker = new TimePickerDialog(AddActivity.this, new TimePickerDialog.OnTimeSetListener() {
-                @Override
-                public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
-                    eventTimeEdt.setText( selectedHour + ":" + selectedMinute);
-                }
-            }, hour, minute, false);//Yes 24 hour time
-            mTimePicker.setTitle("選擇活動時間");
-            mTimePicker.show();
-        }
-    };
 
     private View.OnClickListener pickDateListener
             = new View.OnClickListener(){
         @Override
         public void onClick(View view){
             final DatePicker datePicker = new DatePicker(AddActivity.this);
-
             new AlertDialog.Builder(AddActivity.this)
                     .setTitle("選擇活動日期")
                     .setView(datePicker)
@@ -136,6 +136,30 @@ public class AddActivity extends Activity {
                     .show();
         }
     };
+    /**時間選擇，確認、取消按鈕還要再加*/
+    private View.OnClickListener pickTimeListener
+            = new View.OnClickListener(){
+        @Override
+        public void onClick(View v) {
+            // TODO Auto-generated method stub
+            TimePickerDialog mTimePicker;
+            mTimePicker = new TimePickerDialog(AddActivity.this, new TimePickerDialog.OnTimeSetListener() {
+                @Override
+                public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
+                    StringBuilder sb = new StringBuilder();
+                    sb.append(selectedHour);
+                    sb.append(":");
+                    sb.append(formatDigit(selectedMinute));
+                    eventTimeEdt.setText(sb.toString());
+                    hour = selectedHour;
+                    minute = selectedMinute;
+                }
+            }, hour, minute, false);//Yes 24 hour time
+            mTimePicker.setTitle("選擇活動時間");
+            mTimePicker.show();
+        }
+    };
+
     private OnItemSelectedListener spnListener1 =
             new OnItemSelectedListener(){
                 @Override
@@ -171,6 +195,7 @@ public class AddActivity extends Activity {
             public void onResponse(int code, Map<String, String> headers) {
                 Toast.makeText(AddActivity.this, "活動新增成功！",
                         Toast.LENGTH_SHORT).show();
+                progressDialog.dismiss();
                 finish();
             }
 
@@ -186,9 +211,10 @@ public class AddActivity extends Activity {
                             Toast.LENGTH_SHORT).show();
                 }
                 else{
-                    Toast.makeText(AddActivity.this, "錯誤！",
+                    Toast.makeText(AddActivity.this, "錯誤！"+code,
                             Toast.LENGTH_SHORT).show();
                 }
+                progressDialog.dismiss();
             }
         },null);
     }
