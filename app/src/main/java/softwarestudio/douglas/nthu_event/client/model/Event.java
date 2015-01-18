@@ -8,6 +8,7 @@ public class Event extends Resource implements Serializable {
 
     public static String getCollectionName() { return "events"; }
 
+    private long id;
     private String title;
     private String description;
     private String location;
@@ -41,12 +42,18 @@ public class Event extends Resource implements Serializable {
     public String[] getTag() {
         return tag;
     }
+
     public void setTag(String[] tag) {
         this.tag = tag;
     }
     public long getTime() {
         return time;
     }
+
+    public void setId(long id) {
+        this.id=id;
+    }
+
     public void setTime(long time) {
         this.time = time;
     }

@@ -21,6 +21,7 @@ public class ShowActivity extends Activity {
     private TextView eventPlace;
     private TextView eventContent;
     private TextView numOfPeople;
+    private String eventId;
 
     private RestManager restMgr;
     @Override
@@ -61,11 +62,11 @@ public class ShowActivity extends Activity {
 
         Intent intent = this.getIntent();
         Bundle bundle = intent.getExtras();
-        String eventId = bundle.getString("EventId");
-        getEventById(eventId);
+        eventId = bundle.getString("EventId");
+        getEvent();
     }
 
-    private void getEventById(String eventId){
+    private void getEvent(){
         Map<String, String> header = new HashMap<>();
 
         restMgr.getResource(Event.class, eventId, new RestManager.GetResourceListener<Event>() {
@@ -92,6 +93,24 @@ public class ShowActivity extends Activity {
     }
 
     private void joinEvent(){
+        Event event=new Event();
+        event.setId(Long.parseLong(eventId));
+        restMgr.postUniversal(Event.class,"http://nthu-event-2014.appspot.com/users/",event,new RestManager.PostResourceListener() {
+            @Override
+            public void onResponse(int code, Map<String, String> headers) {
+
+            }
+
+            @Override
+            public void onRedirect(int code, Map<String, String> headers, String url) {
+
+            }
+
+            @Override
+            public void onError(String message, Throwable cause, int code, Map<String, String> headers) {
+
+            }
+        },null);
 
     }
     private void commentEvent(){
