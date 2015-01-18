@@ -21,6 +21,7 @@
                 android:text="活動名稱"
                 android:id="@+id/event_name"
                 android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="10dp"
                 />
 
             <LinearLayout
@@ -31,12 +32,15 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:text="時間"
+                    android:text="時間："
+                    android:textStyle="bold"
                     android:layout_gravity="start"
-                    android:layout_marginBottom="10dp"/>
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginRight="5dp"/>
                 <TextView
                     android:layout_width="fill_parent"
                     android:layout_height="fill_parent"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
                     android:id="@+id/event_time"/>
             </LinearLayout>
 
@@ -48,12 +52,15 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:text="地點"
+                    android:text="地點："
+                    android:textStyle="bold"
                     android:layout_gravity="start"
-                    android:layout_marginBottom="10dp"/>
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginRight="5dp"/>
                 <TextView
                     android:layout_width="fill_parent"
                     android:layout_height="fill_parent"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
                     android:id="@+id/event_place"/>
             </LinearLayout>
 
@@ -62,13 +69,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="內容"
+                android:text="內容："
+                android:textStyle="bold"
                 android:layout_gravity="start"
                 android:layout_marginBottom="10dp"/>
             <TextView
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:text="活動內容顯示區"
+                android:textAppearance="?android:attr/textAppearanceMedium"
                 android:layout_marginBottom="20dp"
                 android:id="@+id/event_content"/>
             <LinearLayout
@@ -85,7 +93,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="XXX人"
+                    android:text=""
                     android:layout_gravity="bottom"
                     android:id="@+id/event_peopleNum"/>
             </LinearLayout>

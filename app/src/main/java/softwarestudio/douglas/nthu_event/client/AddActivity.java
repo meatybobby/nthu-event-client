@@ -89,22 +89,42 @@ public class AddActivity extends Activity {
             @Override
             public void onClick(View v) {
                 // Show progress
-                progressDialog = new ProgressDialog(AddActivity.this);
-                progressDialog.setMessage(getString(R.string.info_wait));
-                progressDialog.setCancelable(false);
-                progressDialog.show();
+                if(checkUnFill()){
+                    Toast.makeText(AddActivity.this, "請填寫所有欄位！",
+                            Toast.LENGTH_SHORT).show();
+                }
+                else{
+                    progressDialog = new ProgressDialog(AddActivity.this);
+                    progressDialog.setMessage(getString(R.string.info_wait));
+                    progressDialog.setCancelable(false);
+                    progressDialog.show();
 
-                Event e=new Event();
-                e.setTitle(eventNameEdt.getText().toString());
-                e.setDescription(eventContentEdt.getText().toString());
-                e.setTime(getTime());
-                e.setLocation(eventPlaceEdt.getText().toString());
-                e.setTag(tag);
-                postEvent(e);
+                    Event e=new Event();
+                    e.setTitle(eventNameEdt.getText().toString());
+                    e.setDescription(eventContentEdt.getText().toString());
+                    e.setTime(getTime());
+                    e.setLocation(eventPlaceEdt.getText().toString());
+                    e.setTag(tag);
+                    postEvent(e);
+                }
+
             }
         });
     }
+    private boolean checkUnFill(){
+        if(eventNameEdt.getText().toString().trim().equals(""))
+            return true;
+        if(eventDateEdt.getText().toString().trim().equals(""))
+            return true;
+        if(eventTimeEdt.getText().toString().trim().equals(""))
+            return true;
+        if(eventPlaceEdt.getText().toString().trim().equals(""))
+            return true;
+        if(eventContentEdt.getText().toString().trim().equals(""))
+            return true;
 
+        return false;
+    }
 
     private View.OnClickListener pickDateListener
             = new View.OnClickListener(){
@@ -219,11 +239,9 @@ public class AddActivity extends Activity {
         },null);
     }
     private long getTime() {
-       // String[] d=eventDateEdt.getText().toString().split("/");
-      //  String[] t=eventTimeEdt.getText().toString().split(":");
         Calendar calendar=Calendar.getInstance();
         calendar.set(year,month,dateOfMonth,hour,minute);
-        //calendar.set(Integer.parseInt(d[0]),Integer.parseInt(d[1])-1,Integer.parseInt(d[2]),Integer.parseInt(d[0]),Integer.parseInt(d[1]));
+
 
         return calendar.getTimeInMillis();
     }

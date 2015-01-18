@@ -1,6 +1,7 @@
 package softwarestudio.douglas.nthu_event.client;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -27,6 +28,8 @@ public class ShowActivity extends Activity {
     private TextView eventContent;
     private TextView numOfPeople;
     private String eventId;
+
+    private ProgressDialog progressDialog;
 
     private RestManager restMgr;
     @Override
@@ -68,6 +71,10 @@ public class ShowActivity extends Activity {
         Intent intent = this.getIntent();
         Bundle bundle = intent.getExtras();
         eventId = bundle.getString("EventId");
+        progressDialog = new ProgressDialog(ShowActivity.this);
+        progressDialog.setMessage(getString(R.string.info_wait));
+        progressDialog.setCancelable(false);
+        progressDialog.show();
         getEvent();
     }
 
@@ -83,6 +90,7 @@ public class ShowActivity extends Activity {
                 eventPlace.setText(resource.getLocation());
                 eventContent.setText(resource.getDescription());
                 numOfPeople.setText(Integer.toString(resource.getJoinNum()));
+                progressDialog.dismiss();
                 Log.d(TAG, "event got:" + resource.getTitle());
             }
 
@@ -96,6 +104,7 @@ public class ShowActivity extends Activity {
 
                 Toast.makeText(ShowActivity.this, "無法讀取活動",
                         Toast.LENGTH_SHORT).show();
+                progressDialog.dismiss();
             }
         }, null);
     }
