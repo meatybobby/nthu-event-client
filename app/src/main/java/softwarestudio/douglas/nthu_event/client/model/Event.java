@@ -4,17 +4,15 @@ import java.io.Serializable;
 
 import softwarestudio.douglas.nthu_event.client.service.rest.model.Resource;
 
-public class Event extends Resource implements Serializable {
+public class Event extends Resource<Long> implements Serializable {
 
     public static String getCollectionName() { return "events"; }
 
-    private long id;
     private String title;
     private String description;
     private String location;
     private String[] tag;
     private long time;
-
 
 
     private long timeStamp;
@@ -50,7 +48,7 @@ public class Event extends Resource implements Serializable {
         return time;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id=id;
     }
 

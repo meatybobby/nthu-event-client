@@ -398,7 +398,7 @@ public class RestManager {
         return sb.toString();
     }
 
-    public <T extends Resource> String getResourceUrl(Class<T> cls, String id, Resource... parents)
+    public <T extends Resource> String getResourceUrl(Class<T> cls, Object id, Resource... parents)
             throws NoSuchMethodException, InvocationTargetException, IllegalAccessException,
             InstantiationException {
         StringBuilder sb = new StringBuilder(getCollectionUrl(cls, parents));
