@@ -99,7 +99,7 @@ public class AddActivity extends Activity {
                 e.setTitle(eventNameEdt.getText().toString());
                 e.setDescription(eventContentEdt.getText().toString());
                 e.setTime(getTime());
-                e.setLocation(eventPlaceEdt.toString());
+                e.setLocation(eventPlaceEdt.getText().toString());
                 e.setTag(tag);
                 postEvent(e);
             }
@@ -112,6 +112,7 @@ public class AddActivity extends Activity {
         @Override
         public void onClick(View view){
             final DatePicker datePicker = new DatePicker(AddActivity.this);
+
             new AlertDialog.Builder(AddActivity.this)
                     .setTitle("選擇活動日期")
                     .setView(datePicker)

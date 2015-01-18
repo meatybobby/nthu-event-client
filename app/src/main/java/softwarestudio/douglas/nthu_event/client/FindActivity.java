@@ -3,6 +3,7 @@ package softwarestudio.douglas.nthu_event.client;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.FragmentTransaction;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -38,7 +39,13 @@ public class FindActivity extends FragmentActivity implements ActionBar.TabListe
     private static String[] tabsName = {"最新", "最近", "最熱門", "分類"};
 
     private RestManager mRestMgr;
-    public static ArrayList<Event> mEventList = new ArrayList<Event>();
+
+    /*三種不同排序方式的list*/
+    public static ArrayList<Event> eventList1 = new ArrayList<Event>();
+    public static ArrayList<Event> eventList2 = new ArrayList<Event>();
+    public static ArrayList<Event> eventList3 = new ArrayList<Event>();
+
+    private static ProgressDialog progressDialog;
     /*宣告成static >> 為了讓fragment能存取*/
 
     public void onCreate(Bundle savedInstanceState) {
@@ -71,8 +78,13 @@ public class FindActivity extends FragmentActivity implements ActionBar.TabListe
                             .setTabListener(this));
         }
 
-        getEvents();//一次抓完所有Event 不同fragment分別再排序
-
+        progressDialog = new ProgressDialog(FindActivity.this);
+        progressDialog.setMessage(getString(R.string.info_wait));
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+        getEvents("latest");
+        getEvents("nearest");
+        getEvents("hottest");//一次抓完所有Event 不同fragment分別再排序
     }
 
 
@@ -114,7 +126,7 @@ public class FindActivity extends FragmentActivity implements ActionBar.TabListe
                     // The other sections of the app are dummy placeholders.
                     Fragment fragment = new EventSectionFragment();
                     Bundle args = new Bundle();
-                    args.putInt(EventSectionFragment.ARG_SECTION_NUMBER, i);
+                    args.putInt(EventSectionFragment.ARG_SECTION_NUMBER, i+1);
                     fragment.setArguments(args);
                     return fragment;
             }
@@ -132,18 +144,28 @@ public class FindActivity extends FragmentActivity implements ActionBar.TabListe
     }
 
 
-    private void getEvents(){
+    private void getEvents(final String sortType){
 
-            Map<String, String> params = new HashMap<String, String>();
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("SortType",sortType);//要求server根據參數不同有不同排序方式
             mRestMgr.listResource(Event.class, params, new RestManager.ListResourceListener<Event>() {
                 @Override
                 public void onResponse(int code, Map<String, String> headers,
                                        List<Event> resources) {
-                    if (resources != null) {
-                        mEventList.clear();
-                        for(Event e : resources){
-                            mEventList.add(e);
-                        }
+                    if(sortType.equals("latest")){
+                        eventList1.clear();
+                        for(Event e : resources)
+                            eventList1.add(e);
+                    }
+                    else if(sortType.equals("nearest")){
+                        eventList2.clear();
+                        for(Event e : resources)
+                            eventList2.add(e);
+                    }
+                    else if(sortType.equals("hottest")){
+                        eventList3.clear();
+                        for(Event e : resources)
+                            eventList3.add(e);
                     }
                 }
 
@@ -156,32 +178,53 @@ public class FindActivity extends FragmentActivity implements ActionBar.TabListe
                 public void onError(String message, Throwable cause, int code,
                                     Map<String, String> headers) {
                     Log.d(this.getClass().getSimpleName(), "" + code + ": " + message);
+                    progressDialog.dismiss();
                 }
             }, null);
     }
-    /**
-     * A dummy fragment representing a section of the app, but that simply displays dummy text.
-     */
+
+
+
+
     public static class EventSectionFragment extends Fragment {
 
         private ListView mListView;
         private EventAdapter mEventAdapter;
+        private int secNum;
 
         public static final String ARG_SECTION_NUMBER = "section_number";
 
+        @Override
+        public void onActivityCreated(Bundle savedInstanceState){
+            super.onActivityCreated(savedInstanceState);
+
+        }
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_event_list, container, false);
             Bundle args = getArguments();
             /*之後用拿到的參數來判斷要如何排序Events*/
-            String txt = tabsName[args.getInt(ARG_SECTION_NUMBER)];
-
-
+            secNum = args.getInt(ARG_SECTION_NUMBER);
             mListView = (ListView) rootView.findViewById(R.id.list_events);
-            mEventAdapter = new EventAdapter(getActivity(), mEventList);
+            switch (secNum){
+                case 1:
+                    mEventAdapter = new EventAdapter(getActivity(), eventList1);
+                    break;
+                case 2:
+                    mEventAdapter = new EventAdapter(getActivity(), eventList2);
+                    break;
+                case 3:
+                    mEventAdapter = new EventAdapter(getActivity(), eventList3);
+            }
             mListView.setAdapter(mEventAdapter);
-
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    mEventAdapter.notifyDataSetChanged();
+                    progressDialog.dismiss();
+                }
+            });
             mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -197,20 +240,7 @@ public class FindActivity extends FragmentActivity implements ActionBar.TabListe
                     startActivity(intent);
                 }
             });
-
-            sortEvents(args.getInt(ARG_SECTION_NUMBER));
-
             return rootView;
-        }
-        private void sortEvents(int sectionNum){
-            //TODO 根據sectionNum 排序 mEventList
-
-            getActivity().runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    mEventAdapter.notifyDataSetChanged();
-                }
-            });
         }
 
     }
