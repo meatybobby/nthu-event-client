@@ -77,13 +77,9 @@ public class ShowActivity extends Activity {
         restMgr.getResource(Event.class, eventId, new RestManager.GetResourceListener<Event>() {
             @Override
             public void onResponse(int code, Map<String, String> headers, Event resource) {
-                /*eventName.setText(resource.getTitle());
-                eventPlace.setText(resource.getLocation());
-                eventContent.setText(resource.getDescription());
-                numOfPeople.setText(resource.getJoinNum());*/
                 resource.getTime();
                 eventName.setText(resource.getTitle());
-                eventTime.setText(convertDate(resource.getTime() ));
+                eventTime.setText(convertDate(resource.getTime()));
                 eventPlace.setText(resource.getLocation());
                 eventContent.setText(resource.getDescription());
                 numOfPeople.setText(Integer.toString(resource.getJoinNum()));
