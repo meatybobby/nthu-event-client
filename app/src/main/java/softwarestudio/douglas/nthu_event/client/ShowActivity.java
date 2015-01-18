@@ -95,7 +95,7 @@ public class ShowActivity extends Activity {
     private void joinEvent(){
         Event event=new Event();
         event.setId(Long.parseLong(eventId));
-        restMgr.postUniversal(Event.class,"http://nthu-event-2014.appspot.com/users/",event,new RestManager.PostResourceListener() {
+        restMgr.postUniversal(Event.class,"http://nthu-event-2014.appspot.com/users/join-event",event,new RestManager.PostResourceListener() {
             @Override
             public void onResponse(int code, Map<String, String> headers) {
 

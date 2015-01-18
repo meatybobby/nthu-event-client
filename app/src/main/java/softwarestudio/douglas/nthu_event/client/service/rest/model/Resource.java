@@ -2,7 +2,7 @@ package softwarestudio.douglas.nthu_event.client.service.rest.model;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-public abstract class Resource {
+public abstract class Resource<T> {
     public static final Gson gson = new GsonBuilder().serializeNulls().setPrettyPrinting().create();
 
     /**
@@ -12,12 +12,12 @@ public abstract class Resource {
         return null;
     }
 
-    protected String id;
+    protected T id;
 
     protected Resource() {
     }
 
-    public String getId() {
+    public T getId() {
         return id;
     }
 

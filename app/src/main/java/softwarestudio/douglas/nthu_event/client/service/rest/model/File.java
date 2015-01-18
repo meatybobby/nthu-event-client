@@ -7,7 +7,7 @@ public abstract class File extends PostResource {
     protected String mimeType;
 
     public String getName() {
-        return id.substring(id.lastIndexOf("/") + 1);
+        return (id.substring(id.lastIndexOf("/") + 1));
     }
 
     public byte[] getBytes() {

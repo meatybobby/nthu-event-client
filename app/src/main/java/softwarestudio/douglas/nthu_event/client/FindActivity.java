@@ -192,7 +192,7 @@ public class FindActivity extends FragmentActivity implements ActionBar.TabListe
 
                     /*Event class有implement Serializable 所以可以用intent傳*/
                     Bundle bundle = new Bundle();
-                    bundle.putString("EventId", event.getId());
+                    bundle.putString("EventId", event.getId().toString());
                     intent.putExtras(bundle);
                     startActivity(intent);
                 }
