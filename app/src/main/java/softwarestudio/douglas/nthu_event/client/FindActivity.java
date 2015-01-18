@@ -33,7 +33,7 @@ import softwarestudio.douglas.nthu_event.client.model.Event;
 import softwarestudio.douglas.nthu_event.client.service.rest.RestManager;
 
 public class FindActivity extends FragmentActivity implements ActionBar.TabListener {
-
+    private static final String TAG = FindActivity.class.getSimpleName();
     AppSectionsPagerAdapter mAppSectionsPagerAdapter;
     ViewPager mViewPager;
     private static String[] tabsName = {"最新", "最近", "最熱門", "分類"};
@@ -183,14 +183,12 @@ public class FindActivity extends FragmentActivity implements ActionBar.TabListe
             }, null);
     }
 
-
-
-
     public static class EventSectionFragment extends Fragment {
 
         private ListView mListView;
         private EventAdapter mEventAdapter;
         private int secNum;
+
 
         public static final String ARG_SECTION_NUMBER = "section_number";
 
@@ -207,6 +205,7 @@ public class FindActivity extends FragmentActivity implements ActionBar.TabListe
             /*之後用拿到的參數來判斷要如何排序Events*/
             secNum = args.getInt(ARG_SECTION_NUMBER);
             mListView = (ListView) rootView.findViewById(R.id.list_events);
+
             switch (secNum){
                 case 1:
                     mEventAdapter = new EventAdapter(getActivity(), eventList1);
@@ -215,6 +214,9 @@ public class FindActivity extends FragmentActivity implements ActionBar.TabListe
                     mEventAdapter = new EventAdapter(getActivity(), eventList2);
                     break;
                 case 3:
+                    mEventAdapter = new EventAdapter(getActivity(), eventList3);
+                    break;
+                default:
                     mEventAdapter = new EventAdapter(getActivity(), eventList3);
             }
             mListView.setAdapter(mEventAdapter);
@@ -232,6 +234,7 @@ public class FindActivity extends FragmentActivity implements ActionBar.TabListe
 
                     Intent intent = new Intent(getActivity(), ShowActivity.class);
                     Event event = (Event) mEventAdapter.getItem(position);
+                    Log.d(TAG, "event clicked:" + event.getId().toString());
 
                     /*Event class有implement Serializable 所以可以用intent傳*/
                     Bundle bundle = new Bundle();

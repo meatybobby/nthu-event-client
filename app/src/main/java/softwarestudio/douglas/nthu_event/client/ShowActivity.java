@@ -3,11 +3,14 @@ package softwarestudio.douglas.nthu_event.client;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -16,6 +19,8 @@ import softwarestudio.douglas.nthu_event.client.service.rest.RestManager;
 
 
 public class ShowActivity extends Activity {
+
+    private static final String TAG = ShowActivity.class.getSimpleName();
     private TextView eventName;
     private TextView eventTime;
     private TextView eventPlace;
@@ -72,10 +77,17 @@ public class ShowActivity extends Activity {
         restMgr.getResource(Event.class, eventId, new RestManager.GetResourceListener<Event>() {
             @Override
             public void onResponse(int code, Map<String, String> headers, Event resource) {
-                eventName.setText(resource.getTitle());
+                /*eventName.setText(resource.getTitle());
                 eventPlace.setText(resource.getLocation());
                 eventContent.setText(resource.getDescription());
-                numOfPeople.setText(resource.getJoinNum());
+                numOfPeople.setText(resource.getJoinNum());*/
+                resource.getTime();
+                eventName.setText(resource.getTitle());
+                eventTime.setText(convertDate(resource.getTime() ));
+                eventPlace.setText(resource.getLocation());
+                eventContent.setText(resource.getDescription());
+                numOfPeople.setText(Integer.toString(resource.getJoinNum()));
+                Log.d(TAG, "event got:" + resource.getTitle());
             }
 
             @Override
@@ -118,5 +130,9 @@ public class ShowActivity extends Activity {
     }
     private void bookmarkEvent(){
 
+    }
+    private String convertDate(long millis){
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd hh:mm (a)");
+        return formatter.format( new Date(millis) );
     }
 }

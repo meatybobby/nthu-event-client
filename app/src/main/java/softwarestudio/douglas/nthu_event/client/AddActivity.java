@@ -33,18 +33,17 @@ import softwarestudio.douglas.nthu_event.client.service.rest.RestManager;
 
 
 public class AddActivity extends Activity {
-    public final static int UNSET_TIME = -1;
     private EditText eventNameEdt;
     private EditText eventDateEdt;
     private EditText eventPlaceEdt;
     private EditText eventTimeEdt;
     private EditText eventContentEdt;
     private Button submitBtn;
-    private Button chooseDateBtn;
     private RestManager rstmgr;
     private String[] tag=new String[2];
 
     private int hour, minute;
+    private int year, month, dateOfMonth;
 
     private ProgressDialog progressDialog;
     @Override
@@ -57,7 +56,7 @@ public class AddActivity extends Activity {
         eventPlaceEdt = (EditText) findViewById(R.id.location_txt);
         eventContentEdt = (EditText) findViewById(R.id.content_txt);
         submitBtn = (Button) findViewById(R.id.submitEventBtn);
-        // chooseDateBtn = (Button) findViewById(R.id.btn_pickDate);
+
 
         rstmgr=RestManager.getInstance(this);
 
@@ -120,9 +119,9 @@ public class AddActivity extends Activity {
                             new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    int year = datePicker.getYear();
-                                    int month = datePicker.getMonth();
-                                    int dateOfMonth = datePicker.getDayOfMonth();
+                                     year = datePicker.getYear();
+                                     month = datePicker.getMonth();
+                                     dateOfMonth = datePicker.getDayOfMonth();
 
                                     String dateStr = year + "/"
                                             + formatDigit(month + 1) + "/"
@@ -220,10 +219,12 @@ public class AddActivity extends Activity {
         },null);
     }
     private long getTime() {
-        String[] d=eventDateEdt.getText().toString().split("/");
-        String[] t=eventTimeEdt.getText().toString().split(":");
+       // String[] d=eventDateEdt.getText().toString().split("/");
+      //  String[] t=eventTimeEdt.getText().toString().split(":");
         Calendar calendar=Calendar.getInstance();
-        calendar.set(Integer.parseInt(d[0]),Integer.parseInt(d[1])-1,Integer.parseInt(d[2]),Integer.parseInt(d[0]),Integer.parseInt(d[1]));
+        calendar.set(year,month,dateOfMonth,hour,minute);
+        //calendar.set(Integer.parseInt(d[0]),Integer.parseInt(d[1])-1,Integer.parseInt(d[2]),Integer.parseInt(d[0]),Integer.parseInt(d[1]));
+
         return calendar.getTimeInMillis();
     }
 }
