@@ -11,8 +11,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import softwarestudio.douglas.nthu_event.client.model.Event;
@@ -28,6 +30,8 @@ public class ShowActivity extends Activity {
     private TextView eventContent;
     private TextView numOfPeople;
     private String eventId;
+
+    private List<Event> userJoinList;
 
     private ProgressDialog progressDialog;
 
@@ -45,14 +49,28 @@ public class ShowActivity extends Activity {
         eventContent = (TextView) findViewById(R.id.event_content);
         numOfPeople = (TextView) findViewById(R.id.event_peopleNum);
 
-        Button joinBtn = (Button) findViewById(R.id.btn_join);
+        final Button joinBtn = (Button) findViewById(R.id.btn_join);
         Button commentBtn = (Button) findViewById(R.id.btn_comment);
         Button bookmarkBtn = (Button) findViewById(R.id.btn_bookmark);
+
+        userJoinList = new ArrayList<Event>();
+        loadUserJoin();
+        if(checkUserJoin()){
+            joinBtn.setText("退出");
+        }else{
+            joinBtn.setText("參加");
+        }
 
         joinBtn.setOnClickListener(new Button.OnClickListener(){
             @Override
             public void onClick(View view){
                 joinEvent();
+                getEvent();
+                if(joinBtn.getText().toString().equals("參加")){
+                    joinBtn.setText("退出");
+                }else{
+                    joinBtn.setText("參加");
+                }
             }
         });
         commentBtn.setOnClickListener(new Button.OnClickListener(){
@@ -76,8 +94,41 @@ public class ShowActivity extends Activity {
         progressDialog.setCancelable(false);
         progressDialog.show();
         getEvent();
+
     }
 
+    private boolean checkUserJoin(){/*若user有參加該event 回傳true*/
+        for(Event e: userJoinList){
+            if(e.getId().toString().equals(eventId)){
+                return true;
+            }
+        }
+        return false;
+    }
+    private void loadUserJoin(){
+        Map<String, String> params = new HashMap<String, String>();
+        restMgr.listUniversal(Event.class, "http://nthu-event-2014.appspot.com/users/join-event",params, new RestManager.ListResourceListener<Event>() {
+            @Override
+            public void onResponse(int code, Map<String, String> headers,
+                                   List<Event> resources) {
+                Toast.makeText(ShowActivity.this, "成功list",Toast.LENGTH_SHORT).show();
+                for(Event e : resources)
+                    userJoinList.add(e);
+            }
+
+            @Override
+            public void onRedirect(int code, Map<String, String> headers, String url) {
+                onError(null, null, code, headers);
+            }
+
+            @Override
+            public void onError(String message, Throwable cause, int code,
+                                Map<String, String> headers) {
+                Log.d(this.getClass().getSimpleName(), "" + code + ": " + message);
+                Toast.makeText(ShowActivity.this, "無法list",Toast.LENGTH_SHORT).show();
+            }
+        }, null);
+    }
     private void getEvent(){
         Map<String, String> header = new HashMap<>();
 
@@ -108,6 +159,7 @@ public class ShowActivity extends Activity {
             }
         }, null);
     }
+
 
     private void joinEvent(){
         Event event=new Event();

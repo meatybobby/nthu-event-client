@@ -240,6 +240,28 @@ public class RestManager {
             listener.onError(e.getMessage(), e, 0, null);
         }
     }
+    public <T extends Resource> void listUniversal(Class<T> elemCls,String url, Map<String, String> params,
+                                                  final ListResourceListener<T> listener, String tag,
+                                                  Resource... parents) {
+        try {
+            Log.d(TAG, "Listing resource from " + url + " with parameters " +
+                    Arrays.toString(params.entrySet().toArray()) + "...");
+            Class<T[]> arrayCls = (Class<T[]>) Class.forName("[L" + elemCls.getName() + ";");
+            GsonRequest<T[]> req = new GsonRequest<T[]>(url, params, null,
+                    arrayCls, new Response.Listener<GsonResponse<T[]>>() {
+                @Override
+                public void onResponse(GsonResponse<T[]> gRes) {
+                    Log.d(TAG, "Response: " + gRes);
+                    if (listener != null) listener.onResponse(gRes.getCode(), gRes.getHeaders(),
+                            gRes.getBody() == null ? null : Arrays.asList(gRes.getBody()));
+                }
+            }, new RestErrorListener(listener));
+            req.setTag(tag);
+            reqQueue.add(req);
+        } catch (Exception e) {
+            listener.onError(e.getMessage(), e, 0, null);
+        }
+    }
 
     public <T extends Resource> void putResource(Class<T> cls, T resource,
                                                  final PutResourceListener listener, String tag,
