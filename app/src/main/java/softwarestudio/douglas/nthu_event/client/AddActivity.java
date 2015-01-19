@@ -104,7 +104,8 @@ public class AddActivity extends Activity {
                     e.setDescription(eventContentEdt.getText().toString());
                     e.setTime(getTime());
                     e.setLocation(eventPlaceEdt.getText().toString());
-                    e.setTag(tag);
+                    e.setTag1(tag[0]);
+                    e.setTag2(tag[1]);
                     postEvent(e);
                 }
 

@@ -11,7 +11,8 @@ public class Event extends Resource<Long> implements Serializable {
     private String title;
     private String description;
     private String location;
-    private String[] tag;
+    private String tag1;
+    private String tag2;
     private long time;
 
 
@@ -37,12 +38,20 @@ public class Event extends Resource<Long> implements Serializable {
     public void setLocation(String location) {
         this.location = location;
     }
-    public String[] getTag() {
-        return tag;
+    public String getTag1() {
+        return tag1;
     }
 
-    public void setTag(String[] tag) {
-        this.tag = tag;
+    public void setTag1(String tag1) {
+        this.tag1 = tag1;
+    }
+
+    public String getTag2() {
+        return tag2;
+    }
+
+    public void setTag2(String tag2) {
+        this.tag2 = tag2;
     }
     public long getTime() {
         return time;
