@@ -4,20 +4,58 @@
     android:orientation="vertical"
     android:layout_height="wrap_content"
     android:layout_width="fill_parent"
-    android:paddingBottom="3dip"
-    android:paddingLeft="10dip">
+    android:paddingBottom="10dp"
+    android:paddingLeft="16dip"
+    android:paddingRight="16dip"
+    android:paddingTop="10dp"
+    android:background="#F3E5F5">
 
-    <TextView
-        android:layout_height="wrap_content"
+    <LinearLayout
         android:layout_width="fill_parent"
-        android:id="@+id/txt_title"
-        android:textSize="20sp">
-    </TextView>
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <ImageView
+            android:layout_width="42dp"
+            android:layout_height="42dp"
 
-    <TextView
-        android:layout_height="wrap_content"
-        android:layout_width="fill_parent"
-        android:id="@+id/txt_content">
-    </TextView>
+            android:background="@drawable/event_create"/>
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="8"
+            android:layout_marginLeft="8dp">
+            <TextView
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:id="@+id/txt_title"
+                android:textSize="20sp"
+                android:text="活動名稱">
+            </TextView>
+            <TextView
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:id="@+id/txt_date"
+                android:layout_below="@+id/txt_title"
+                android:text="2015.1.19 15:00"
+                android:layout_marginTop="5dp">
+            </TextView>
+            <TextView
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:id="@+id/txt_joinNum"
+                android:layout_marginTop="5dp"
+                android:text="即將參加人數：6人"
+
+                android:layout_below="@+id/txt_title"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true">
+            </TextView>
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+
+
 
 </LinearLayout>
