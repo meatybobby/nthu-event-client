@@ -7,7 +7,9 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import softwarestudio.douglas.nthu_event.client.R;
@@ -52,12 +54,20 @@ public class EventAdapter extends BaseAdapter {
         Event event = mEventList.get(position);
 
         TextView titleTxt = (TextView) convertView.findViewById(R.id.txt_title);
-        TextView contentTxt = (TextView) convertView.findViewById(R.id.txt_content);
+        TextView dateTxt = (TextView) convertView.findViewById(R.id.txt_date);
+        TextView joinNumTxt = (TextView) convertView.findViewById(R.id.txt_joinNum);
+
 
         titleTxt.setText(event.getTitle());
-        contentTxt.setText(event.getDescription());
+        dateTxt.setText(convertDate(event.getTime()));
+        joinNumTxt.setText("目前參加人數： " + event.getJoinNum());
 
         return convertView;
+    }
+
+    private String convertDate(long millis){
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd");
+        return formatter.format( new Date(millis) );
     }
 
 }
