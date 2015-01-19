@@ -59,6 +59,7 @@ public class ShowActivity extends Activity {
         joinBtn.setOnClickListener(new Button.OnClickListener(){
             @Override
             public void onClick(View view){
+                progressDialog.show();
                 joinEvent();
                 /*if(joinBtn.getText().toString().equals("參加")){
                     joinBtn.setText("退出");
@@ -173,6 +174,7 @@ public class ShowActivity extends Activity {
                 Toast.makeText(ShowActivity.this, "成功list",Toast.LENGTH_SHORT).show();
                 for(Event e : resources)
                     userJoinList.put(e.getId(),true);
+                getEvent();
             }
 
             @Override
