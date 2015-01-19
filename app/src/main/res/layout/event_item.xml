@@ -5,20 +5,21 @@
     android:layout_height="wrap_content"
     android:layout_width="fill_parent"
     android:paddingBottom="10dp"
-    android:paddingLeft="16dip"
+    android:paddingLeft="8dp"
     android:paddingRight="16dip"
     android:paddingTop="10dp"
-    android:background="#F3E5F5">
+    android:background="@drawable/selector">
 
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
         <ImageView
-            android:layout_width="42dp"
-            android:layout_height="42dp"
-
-            android:background="@drawable/event_create"/>
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_marginTop="0dp"
+            android:background="@drawable/icon_science"
+            android:id="@+id/list_icon"/>
         <RelativeLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
@@ -29,7 +30,7 @@
                 android:layout_width="wrap_content"
                 android:id="@+id/txt_title"
                 android:textSize="20sp"
-                android:text="活動名稱">
+                android:text="test01">
             </TextView>
             <TextView
                 android:layout_height="wrap_content"

@@ -113,14 +113,18 @@ public class MyPageActivity extends FragmentActivity implements ActionBar.TabLis
             @Override
             public void onResponse(int code, Map<String, String> headers,
                                    List<Event> resources) {
+
                 if(type.equals(JOIN_EVENT)){
+                    joinEventList.clear();
                     joinEventList.addAll(resources);
                 }
                 else{
+                    hostEventList.clear();
                     hostEventList.addAll(resources);
                     progressDialog.dismiss();
                     createTab();
                 }
+                Toast.makeText(MyPageActivity.this, "成功讀取活動 " + type,Toast.LENGTH_SHORT).show();
             }
 
             @Override

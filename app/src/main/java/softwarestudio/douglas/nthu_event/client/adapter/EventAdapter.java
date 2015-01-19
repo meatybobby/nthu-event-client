@@ -1,15 +1,19 @@
 package softwarestudio.douglas.nthu_event.client.adapter;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import softwarestudio.douglas.nthu_event.client.R;
@@ -22,10 +26,26 @@ public class EventAdapter extends BaseAdapter {
 
     private List<Event> mEventList;
     private LayoutInflater mMyInflater;
+    private HashMap<String,Drawable> imageMap;
+    private List<String> tagList;
+    private List<Drawable> iconList;
 
     public EventAdapter(Context c, ArrayList<Event> list) {
         this.mEventList = list;
         mMyInflater = LayoutInflater.from(c);
+        imageMap = new HashMap<String, Drawable>();
+
+        tagList = Arrays.asList(c.getResources().getStringArray(R.array.events_category2));
+        iconList = new ArrayList<Drawable>();
+        iconList.add(c.getResources().getDrawable(R.drawable.icon_science));
+        iconList.add(c.getResources().getDrawable(R.drawable.icon_art));
+        iconList.add(c.getResources().getDrawable(R.drawable.icon_social));
+        iconList.add(c.getResources().getDrawable(R.drawable.icon_sports));
+        iconList.add(c.getResources().getDrawable(R.drawable.icon_mix));
+
+        for(int i=0; i<iconList.size() && i<tagList.size(); i++){
+            imageMap.put(tagList.get(i),iconList.get(i));
+        }
     }
 
     @Override
@@ -57,6 +77,9 @@ public class EventAdapter extends BaseAdapter {
         TextView dateTxt = (TextView) convertView.findViewById(R.id.txt_date);
         TextView joinNumTxt = (TextView) convertView.findViewById(R.id.txt_joinNum);
 
+        /*動態更改list icon*/
+        ImageView listIcon = (ImageView) convertView.findViewById(R.id.list_icon);
+        listIcon.setBackgroundDrawable(imageMap.get(event.getTag2()));
 
         titleTxt.setText(event.getTitle());
         dateTxt.setText(convertDate(event.getTime()));
