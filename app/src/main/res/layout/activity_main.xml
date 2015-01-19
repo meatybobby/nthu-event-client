@@ -3,34 +3,40 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <Button
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="@string/find_events"
-        android:id="@+id/findEventBtn"
-        android:layout_marginLeft="58dp"
-        android:layout_marginStart="58dp"
-        android:layout_marginBottom="65dp"
-        android:layout_above="@+id/myPageBtn"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/add_events"
-        android:id="@+id/addEventBtn"
-        android:layout_alignTop="@+id/findEventBtn"
-        android:layout_toRightOf="@+id/myPageBtn"
-        android:layout_toEndOf="@+id/myPageBtn" />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/my_page"
-        android:id="@+id/myPageBtn"
+        android:orientation="vertical"
         android:layout_centerVertical="true"
-        android:layout_toRightOf="@+id/findEventBtn"
-        android:layout_toEndOf="@+id/findEventBtn" />
+        android:layout_margin="15dp">
+        <Button
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/find_events"
+            android:id="@+id/findEventBtn"
+            android:layout_marginBottom="5dp"
+            style="@style/com_facebook_loginview_silver_style"
+        />
+
+        <Button
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/add_events"
+            android:id="@+id/addEventBtn"
+            android:layout_marginBottom="5dp"
+            style="@style/com_facebook_loginview_silver_style"
+           />
+
+        <Button
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/my_page"
+            android:id="@+id/myPageBtn"
+            android:layout_marginBottom="5dp"
+            style="@style/com_facebook_loginview_silver_style"
+        />
+
+    </LinearLayout>
+
 
 </RelativeLayout>

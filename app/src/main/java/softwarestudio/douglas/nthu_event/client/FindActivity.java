@@ -83,9 +83,10 @@ public class FindActivity extends FragmentActivity implements ActionBar.TabListe
         progressDialog.setMessage(getString(R.string.info_wait));
         progressDialog.setCancelable(false);
         progressDialog.show();
+
+        getEvents("hottest");//一次抓完所有Event 不同fragment分別再排序
         getEvents("latest");
         getEvents("nearest");
-        getEvents("hottest");//一次抓完所有Event 不同fragment分別再排序
     }
 
 
@@ -168,6 +169,7 @@ public class FindActivity extends FragmentActivity implements ActionBar.TabListe
                         for(Event e : resources)
                             eventList3.add(e);
                     }
+                    progressDialog.dismiss();
                 }
 
                 @Override
@@ -215,7 +217,19 @@ public class FindActivity extends FragmentActivity implements ActionBar.TabListe
             }
             setListAdapter(mEventAdapter);
             mEventAdapter.notifyDataSetChanged();
-            progressDialog.dismiss();
+
+        }
+        @Override
+        public void onActivityCreated(Bundle savedInstanceState){
+            super.onCreate(savedInstanceState);
+            mEventAdapter.notifyDataSetChanged();
+            /*getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    mEventAdapter.notifyDataSetChanged();
+                    //progressDialog.dismiss();
+                }
+            });*/
         }
 
         @Override
