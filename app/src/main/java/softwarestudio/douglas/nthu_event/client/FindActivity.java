@@ -45,6 +45,7 @@ public class FindActivity extends FragmentActivity implements ActionBar.TabListe
     public static ArrayList<Event> eventList1 = new ArrayList<Event>();
     public static ArrayList<Event> eventList2 = new ArrayList<Event>();
     public static ArrayList<Event> eventList3 = new ArrayList<Event>();
+    //private HashMap<Long> userInEvent;
     //private static EventAdapter eventAdapter1;
 
     private static ProgressDialog progressDialog;

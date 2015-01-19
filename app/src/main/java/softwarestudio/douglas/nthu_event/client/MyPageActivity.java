@@ -3,47 +3,63 @@ package softwarestudio.douglas.nthu_event.client;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.FragmentTransaction;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.ListFragment;
 import android.support.v4.view.ViewPager;
 import android.support.v4.app.NavUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-public class MyPageActivity extends FragmentActivity implements ActionBar.TabListener {
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
+import softwarestudio.douglas.nthu_event.client.adapter.EventAdapter;
+import softwarestudio.douglas.nthu_event.client.model.Event;
+import softwarestudio.douglas.nthu_event.client.service.rest.RestManager;
+
+public class MyPageActivity extends FragmentActivity implements ActionBar.TabListener {
+    private static final String TAG = MyPageActivity.class.getSimpleName();
     AppSectionsPagerAdapter mAppSectionsPagerAdapter;
     ViewPager mViewPager;
-    private static String[] tabsName = {"參加的活動","舉辦的活動"/*,"收藏"*/};
+    private static final String[] tabsName = {"參加的活動","舉辦的活動"/*,"收藏"*/};
+    public static ArrayList<Event> joinEventList = new ArrayList<Event>();
+    public static ArrayList<Event> hostEventList = new ArrayList<Event>();
+    private static ProgressDialog progressDialog;
+    private RestManager restMgr;
+    private static final String JOIN_EVENT = "join";
+    private static final String HOST_EVENT = "host";
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_find);
+
+        restMgr =  RestManager.getInstance(getApplication());
+
         mAppSectionsPagerAdapter = new AppSectionsPagerAdapter(getSupportFragmentManager(),tabsName.length);
-        final ActionBar actionBar = getActionBar();
-        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-        mViewPager = (ViewPager) findViewById(R.id.pager);
-        mViewPager.setAdapter(mAppSectionsPagerAdapter);
-        mViewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
-            @Override
-            public void onPageSelected(int position) {
-                actionBar.setSelectedNavigationItem(position);
-            }
-        });
-        for(int i=0; i<mAppSectionsPagerAdapter.getCount(); i++){
-            actionBar.addTab(
-                    actionBar.newTab()
-                            .setText(tabsName[i])
-                            .setTabListener(this));
-        }
+
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage(getString(R.string.info_wait));
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+
+        getEvents(JOIN_EVENT);
+        getEvents(HOST_EVENT);
+
     }
 
 
@@ -61,6 +77,66 @@ public class MyPageActivity extends FragmentActivity implements ActionBar.TabLis
     public void onTabReselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
     }
 
+    private void createTab(){
+        final ActionBar actionBar = getActionBar();
+        actionBar.setHomeButtonEnabled(true);
+        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+
+        mViewPager = (ViewPager) findViewById(R.id.pager);
+        mViewPager.setAdapter(mAppSectionsPagerAdapter);
+        mViewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+            @Override
+            public void onPageSelected(int position) {
+                actionBar.setSelectedNavigationItem(position);
+            }
+        });
+
+        for(int i=0; i<mAppSectionsPagerAdapter.getCount(); i++){
+            actionBar.addTab(
+                    actionBar.newTab()
+                            .setText(tabsName[i])
+                            .setTabListener(this));
+        }
+    }
+    private void getEvents(final String type){
+        Map<String, String> params = new HashMap<String, String>();
+
+        StringBuilder url = new StringBuilder("http://nthu-event-2014.appspot.com/users/");
+        if(type.equals(JOIN_EVENT)){
+            url.append("join-event");
+        }
+        else{
+            url.append("host-event");
+        }
+
+        restMgr.listUniversal(Event.class, url.toString(),params, new RestManager.ListResourceListener<Event>() {
+            @Override
+            public void onResponse(int code, Map<String, String> headers,
+                                   List<Event> resources) {
+                if(type.equals(JOIN_EVENT)){
+                    joinEventList.addAll(resources);
+                }
+                else{
+                    hostEventList.addAll(resources);
+                    progressDialog.dismiss();
+                    createTab();
+                }
+            }
+
+            @Override
+            public void onRedirect(int code, Map<String, String> headers, String url) {
+                onError(null, null, code, headers);
+            }
+
+            @Override
+            public void onError(String message, Throwable cause, int code,
+                                Map<String, String> headers) {
+                Log.d(this.getClass().getSimpleName(), "" + code + ": " + message);
+                Toast.makeText(MyPageActivity.this, "無法list",Toast.LENGTH_SHORT).show();
+            }
+        }, null);
+    }
+
     public static class AppSectionsPagerAdapter extends FragmentPagerAdapter {
 
         private int count;
@@ -70,15 +146,12 @@ public class MyPageActivity extends FragmentActivity implements ActionBar.TabLis
         }
         @Override
         public Fragment getItem(int i) {
-            switch (i) {
-                default:
                     // The other sections of the app are dummy placeholders.
-                    Fragment fragment = new DummySectionFragment();
+                    Fragment fragment = new EventSectionFragment();
                     Bundle args = new Bundle();
-                    args.putInt(DummySectionFragment.ARG_SECTION_NUMBER, i);
+                    args.putInt(EventSectionFragment.ARG_SECTION_NUMBER, i);
                     fragment.setArguments(args);
                     return fragment;
-            }
         }
         @Override
         public int getCount() {
@@ -87,17 +160,58 @@ public class MyPageActivity extends FragmentActivity implements ActionBar.TabLis
 
     }
 
-    public static class DummySectionFragment extends Fragment {
+    public static class EventSectionFragment extends ListFragment {
 
+        private EventAdapter mEventAdapter;
+        private int secNum;
         public static final String ARG_SECTION_NUMBER = "section_number";
+
+        @Override
+        public void onCreate(Bundle savedInstanceState){
+            super.onCreate(savedInstanceState);
+        }
+        @Override
+        public void onActivityCreated(Bundle savedInstanceState){
+            super.onCreate(savedInstanceState);
+            //mEventAdapter.notifyDataSetChanged();4
+            Bundle args = getArguments();
+            /*之後用拿到的參數來判斷要如何排序Events*/
+            secNum = args.getInt(ARG_SECTION_NUMBER);
+            switch (secNum){
+                case 1:
+                    mEventAdapter = new EventAdapter(getActivity(), joinEventList);
+                    break;
+                case 2:
+                    mEventAdapter = new EventAdapter(getActivity(), hostEventList);
+                    break;
+                default:
+                    mEventAdapter = new EventAdapter(getActivity(), joinEventList);
+            }
+            setListAdapter(mEventAdapter);
+            mEventAdapter.notifyDataSetChanged();
+        }
+
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_section_dummy, container, false);
-            Bundle args = getArguments();
-            String txt = tabsName[args.getInt(ARG_SECTION_NUMBER)];
-            ((TextView) rootView.findViewById(android.R.id.text1)).setText(txt);
+            View rootView = inflater.inflate(R.layout.fragment_event_list, container, false);
             return rootView;
         }
+        @Override
+        public void onListItemClick(ListView l, View v, int position, long id) {
+            // TODO Auto-generated method stub
+            super.onListItemClick(l, v, position, id);
+            //Toast.makeText(getActivity(), "你按下"+arr[position], Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(getActivity(), ShowActivity.class);
+            Event event = (Event) mEventAdapter.getItem(position);
+            Log.d(TAG, "event clicked:" + event.getId().toString());
+
+                    /*Event class有implement Serializable 所以可以用intent傳*/
+            Bundle bundle = new Bundle();
+            bundle.putString("EventId", event.getId().toString());
+            intent.putExtras(bundle);
+            startActivity(intent);
+        }
+
     }
 }
