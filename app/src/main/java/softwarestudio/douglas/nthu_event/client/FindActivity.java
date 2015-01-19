@@ -194,6 +194,12 @@ public class FindActivity extends FragmentActivity implements ActionBar.TabListe
         public void onCreate(Bundle savedInstanceState){
             super.onCreate(savedInstanceState);
 
+
+
+        }
+        @Override
+        public void onActivityCreated(Bundle savedInstanceState){
+            super.onCreate(savedInstanceState);
             //mEventAdapter.notifyDataSetChanged();4
             Bundle args = getArguments();
             /*之後用拿到的參數來判斷要如何排序Events*/
@@ -212,12 +218,6 @@ public class FindActivity extends FragmentActivity implements ActionBar.TabListe
                     mEventAdapter = new EventAdapter(getActivity(), eventList3);
             }
             setListAdapter(mEventAdapter);
-            mEventAdapter.notifyDataSetChanged();
-
-        }
-        @Override
-        public void onActivityCreated(Bundle savedInstanceState){
-            super.onCreate(savedInstanceState);
             mEventAdapter.notifyDataSetChanged();
             /*getActivity().runOnUiThread(new Runnable() {
                 @Override

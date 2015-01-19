@@ -13,6 +13,7 @@
         android:id="@+id/btn_update"/-->
     <ListView android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:id="@id/android:list">
+        android:id="@id/android:list"
+        android:cacheColorHint="#FFDAFF7F">
     </ListView>
 </LinearLayout>
