@@ -45,6 +45,7 @@ public class FindActivity extends FragmentActivity implements ActionBar.TabListe
     public static ArrayList<Event> eventList1 = new ArrayList<Event>();
     public static ArrayList<Event> eventList2 = new ArrayList<Event>();
     public static ArrayList<Event> eventList3 = new ArrayList<Event>();
+    //private static EventAdapter eventAdapter1;
 
     private static ProgressDialog progressDialog;
     /*宣告成static >> 為了讓fragment能存取*/
@@ -58,26 +59,6 @@ public class FindActivity extends FragmentActivity implements ActionBar.TabListe
 
 
         mAppSectionsPagerAdapter = new AppSectionsPagerAdapter(getSupportFragmentManager(),tabsName.length);
-
-        final ActionBar actionBar = getActionBar();
-        actionBar.setHomeButtonEnabled(true);
-        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-
-        mViewPager = (ViewPager) findViewById(R.id.pager);
-        mViewPager.setAdapter(mAppSectionsPagerAdapter);
-        mViewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
-            @Override
-            public void onPageSelected(int position) {
-                actionBar.setSelectedNavigationItem(position);
-            }
-        });
-
-        for(int i=0; i<mAppSectionsPagerAdapter.getCount(); i++){
-            actionBar.addTab(
-                    actionBar.newTab()
-                            .setText(tabsName[i])
-                            .setTabListener(this));
-        }
 
         progressDialog = new ProgressDialog(FindActivity.this);
         progressDialog.setMessage(getString(R.string.info_wait));
@@ -97,6 +78,7 @@ public class FindActivity extends FragmentActivity implements ActionBar.TabListe
     public void onTabSelected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
         // When the given tab is selected, switch to the corresponding page in the ViewPager.
         mViewPager.setCurrentItem(tab.getPosition());
+
     }
 
     @Override
@@ -144,7 +126,31 @@ public class FindActivity extends FragmentActivity implements ActionBar.TabListe
         }
     }
 
+    private void createTab(){
+        final ActionBar actionBar = getActionBar();
+        actionBar.setHomeButtonEnabled(true);
+        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
+        mViewPager = (ViewPager) findViewById(R.id.pager);
+        mViewPager.setAdapter(mAppSectionsPagerAdapter);
+        mViewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+            @Override
+            public void onPageSelected(int position) {
+                actionBar.setSelectedNavigationItem(position);
+            }
+        });
+
+        for(int i=0; i<mAppSectionsPagerAdapter.getCount(); i++){
+            actionBar.addTab(
+                    actionBar.newTab()
+                            .setText(tabsName[i])
+                            .setTabListener(this));
+        }
+    }
+    @Override
+    public void onBackPressed(){
+        finish();
+    }
     private void getEvents(final String sortType){
 
         Map<String, String> params = new HashMap<String, String>();
@@ -165,7 +171,12 @@ public class FindActivity extends FragmentActivity implements ActionBar.TabListe
                         eventList3.clear();
                         eventList3.addAll(resources);
                     }
-                    progressDialog.dismiss();
+
+                    if(sortType.equals("hottest")){//所有get結束
+                        createTab();
+                        progressDialog.dismiss();
+                    }
+
                 }
 
                 @Override
