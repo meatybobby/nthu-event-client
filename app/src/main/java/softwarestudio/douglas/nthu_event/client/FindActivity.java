@@ -83,10 +83,9 @@ public class FindActivity extends FragmentActivity implements ActionBar.TabListe
         progressDialog.setMessage(getString(R.string.info_wait));
         progressDialog.setCancelable(false);
         progressDialog.show();
-
-        getEvents("hottest");//一次抓完所有Event 不同fragment分別再排序
         getEvents("latest");
         getEvents("nearest");
+        getEvents("hottest");//一次抓完所有Event 不同fragment分別再排序
     }
 
 
@@ -156,18 +155,15 @@ public class FindActivity extends FragmentActivity implements ActionBar.TabListe
                                        List<Event> resources) {
                     if(sortType.equals("latest")){
                         eventList1.clear();
-                        for(Event e : resources)
-                            eventList1.add(e);
+                        eventList1.addAll(resources);
                     }
                     else if(sortType.equals("nearest")){
                         eventList2.clear();
-                        for(Event e : resources)
-                            eventList2.add(e);
+                        eventList2.addAll(resources);
                     }
                     else if(sortType.equals("hottest")){
                         eventList3.clear();
-                        for(Event e : resources)
-                            eventList3.add(e);
+                        eventList3.addAll(resources);
                     }
                     progressDialog.dismiss();
                 }
