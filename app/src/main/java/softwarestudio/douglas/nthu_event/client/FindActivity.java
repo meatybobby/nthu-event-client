@@ -18,6 +18,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.view.MenuItem;
@@ -36,7 +37,7 @@ public class FindActivity extends FragmentActivity implements ActionBar.TabListe
     private static final String TAG = FindActivity.class.getSimpleName();
     AppSectionsPagerAdapter mAppSectionsPagerAdapter;
     ViewPager mViewPager;
-    private static String[] tabsName = {"最新", "最近", "最熱門", "分類"};
+    private static String[] tabsName = {"最新", "最近"/*, "最熱門", "分類"*/};
 
     private RestManager mRestMgr;
 
@@ -183,29 +184,22 @@ public class FindActivity extends FragmentActivity implements ActionBar.TabListe
             }, null);
     }
 
-    public static class EventSectionFragment extends Fragment {
+    public static class EventSectionFragment extends ListFragment {
 
-        private ListView mListView;
+       // private ListView mListView;
         private EventAdapter mEventAdapter;
         private int secNum;
-
-
+        private Button updateBtn;
         public static final String ARG_SECTION_NUMBER = "section_number";
 
         @Override
-        public void onActivityCreated(Bundle savedInstanceState){
-            super.onActivityCreated(savedInstanceState);
+        public void onCreate(Bundle savedInstanceState){
+            super.onCreate(savedInstanceState);
 
-        }
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_event_list, container, false);
+            //mEventAdapter.notifyDataSetChanged();4
             Bundle args = getArguments();
             /*之後用拿到的參數來判斷要如何排序Events*/
             secNum = args.getInt(ARG_SECTION_NUMBER);
-            mListView = (ListView) rootView.findViewById(R.id.list_events);
-
             switch (secNum){
                 case 1:
                     mEventAdapter = new EventAdapter(getActivity(), eventList1);
@@ -219,15 +213,37 @@ public class FindActivity extends FragmentActivity implements ActionBar.TabListe
                 default:
                     mEventAdapter = new EventAdapter(getActivity(), eventList3);
             }
-            mListView.setAdapter(mEventAdapter);
-            getActivity().runOnUiThread(new Runnable() {
+            setListAdapter(mEventAdapter);
+            mEventAdapter.notifyDataSetChanged();
+            progressDialog.dismiss();
+        }
+
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                                 Bundle savedInstanceState) {
+            View rootView = inflater.inflate(R.layout.fragment_event_list, container, false);
+
+            //mListView = (ListView) rootView.findViewById(R.id.list_events);
+            //updateBtn = (Button) rootView.findViewById(R.id.btn_update);
+            /*updateBtn.setOnClickListener(new Button.OnClickListener(){
+                @Override
+                public void onClick(View view){
+                   //mListView.setAdapter(mEventAdapter);
+
+                }
+            });*/
+
+           // mListView.setAdapter(mEventAdapter);
+            //mEventAdapter.notifyDataSetChanged();
+
+            /*getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
                     mEventAdapter.notifyDataSetChanged();
                     progressDialog.dismiss();
                 }
-            });
-            mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            });*/
+            /*mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     //TODO 前往單一活動頁面
@@ -236,14 +252,29 @@ public class FindActivity extends FragmentActivity implements ActionBar.TabListe
                     Event event = (Event) mEventAdapter.getItem(position);
                     Log.d(TAG, "event clicked:" + event.getId().toString());
 
-                    /*Event class有implement Serializable 所以可以用intent傳*/
+                    /*Event class有implement Serializable 所以可以用intent傳
                     Bundle bundle = new Bundle();
                     bundle.putString("EventId", event.getId().toString());
                     intent.putExtras(bundle);
                     startActivity(intent);
                 }
-            });
+            });*/
             return rootView;
+        }
+        @Override
+        public void onListItemClick(ListView l, View v, int position, long id) {
+            // TODO Auto-generated method stub
+            super.onListItemClick(l, v, position, id);
+            //Toast.makeText(getActivity(), "你按下"+arr[position], Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(getActivity(), ShowActivity.class);
+            Event event = (Event) mEventAdapter.getItem(position);
+            Log.d(TAG, "event clicked:" + event.getId().toString());
+
+                    /*Event class有implement Serializable 所以可以用intent傳*/
+            Bundle bundle = new Bundle();
+            bundle.putString("EventId", event.getId().toString());
+            intent.putExtras(bundle);
+            startActivity(intent);
         }
 
     }

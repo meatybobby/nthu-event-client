@@ -30,6 +30,7 @@ public class ShowActivity extends Activity {
     private TextView eventContent;
     private TextView numOfPeople;
     private String eventId;
+    private Button joinBtn;
 
     private List<Event> userJoinList;
 
@@ -49,28 +50,23 @@ public class ShowActivity extends Activity {
         eventContent = (TextView) findViewById(R.id.event_content);
         numOfPeople = (TextView) findViewById(R.id.event_peopleNum);
 
-        final Button joinBtn = (Button) findViewById(R.id.btn_join);
+        joinBtn = (Button) findViewById(R.id.btn_join);
         Button commentBtn = (Button) findViewById(R.id.btn_comment);
         Button bookmarkBtn = (Button) findViewById(R.id.btn_bookmark);
 
         userJoinList = new ArrayList<Event>();
         loadUserJoin();
-        if(checkUserJoin()){
-            joinBtn.setText("退出");
-        }else{
-            joinBtn.setText("參加");
-        }
 
         joinBtn.setOnClickListener(new Button.OnClickListener(){
             @Override
             public void onClick(View view){
                 joinEvent();
                 getEvent();
-                if(joinBtn.getText().toString().equals("參加")){
+                /*if(joinBtn.getText().toString().equals("參加")){
                     joinBtn.setText("退出");
                 }else{
                     joinBtn.setText("參加");
-                }
+                }*/
             }
         });
         commentBtn.setOnClickListener(new Button.OnClickListener(){
@@ -142,6 +138,12 @@ public class ShowActivity extends Activity {
                 eventContent.setText(resource.getDescription());
                 numOfPeople.setText(Integer.toString(resource.getJoinNum()));
                 progressDialog.dismiss();
+
+                if(checkUserJoin()){
+                    joinBtn.setText("退出");
+                }else{
+                    joinBtn.setText("參加");
+                }
                 Log.d(TAG, "event got:" + resource.getTitle());
             }
 
