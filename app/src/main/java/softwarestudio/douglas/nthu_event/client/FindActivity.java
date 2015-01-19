@@ -288,4 +288,5 @@ public class FindActivity extends FragmentActivity implements ActionBar.TabListe
         }
 
     }
+
 }
