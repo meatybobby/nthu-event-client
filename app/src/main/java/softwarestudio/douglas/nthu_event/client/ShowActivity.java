@@ -32,7 +32,7 @@ public class ShowActivity extends Activity {
     private String eventId;
     private Button joinBtn;
 
-    private List<Event> userJoinList;
+    private Map<Long,Boolean> userJoinList;
 
     private ProgressDialog progressDialog;
 
@@ -54,14 +54,13 @@ public class ShowActivity extends Activity {
         Button commentBtn = (Button) findViewById(R.id.btn_comment);
         Button bookmarkBtn = (Button) findViewById(R.id.btn_bookmark);
 
-        userJoinList = new ArrayList<Event>();
-        loadUserJoin();
+        userJoinList = new HashMap<Long,Boolean>();
 
         joinBtn.setOnClickListener(new Button.OnClickListener(){
             @Override
             public void onClick(View view){
+                progressDialog.show();
                 joinEvent();
-                getEvent();
                 /*if(joinBtn.getText().toString().equals("參加")){
                     joinBtn.setText("退出");
                 }else{
@@ -89,41 +88,12 @@ public class ShowActivity extends Activity {
         progressDialog.setMessage(getString(R.string.info_wait));
         progressDialog.setCancelable(false);
         progressDialog.show();
-        getEvent();
+        loadUserJoin();
 
     }
 
     private boolean checkUserJoin(){/*若user有參加該event 回傳true*/
-        for(Event e: userJoinList){
-            if(e.getId().toString().equals(eventId)){
-                return true;
-            }
-        }
-        return false;
-    }
-    private void loadUserJoin(){
-        Map<String, String> params = new HashMap<String, String>();
-        restMgr.listUniversal(Event.class, "http://nthu-event-2014.appspot.com/users/join-event",params, new RestManager.ListResourceListener<Event>() {
-            @Override
-            public void onResponse(int code, Map<String, String> headers,
-                                   List<Event> resources) {
-                Toast.makeText(ShowActivity.this, "成功list",Toast.LENGTH_SHORT).show();
-                for(Event e : resources)
-                    userJoinList.add(e);
-            }
-
-            @Override
-            public void onRedirect(int code, Map<String, String> headers, String url) {
-                onError(null, null, code, headers);
-            }
-
-            @Override
-            public void onError(String message, Throwable cause, int code,
-                                Map<String, String> headers) {
-                Log.d(this.getClass().getSimpleName(), "" + code + ": " + message);
-                Toast.makeText(ShowActivity.this, "無法list",Toast.LENGTH_SHORT).show();
-            }
-        }, null);
+        return userJoinList.containsKey(Long.parseLong(eventId));
     }
     private void getEvent(){
         Map<String, String> header = new HashMap<>();
@@ -169,7 +139,7 @@ public class ShowActivity extends Activity {
         restMgr.postUniversal(Event.class,"http://nthu-event-2014.appspot.com/users/join-event",event,new RestManager.PostResourceListener() {
             @Override
             public void onResponse(int code, Map<String, String> headers) {
-
+                getEvent();
             }
 
             @Override
@@ -193,5 +163,31 @@ public class ShowActivity extends Activity {
     private String convertDate(long millis){
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd hh:mm (a)");
         return formatter.format( new Date(millis) );
+    }
+
+    private void loadUserJoin(){
+        Map<String, String> params = new HashMap<String, String>();
+        restMgr.listUniversal(Event.class, "http://nthu-event-2014.appspot.com/users/join-event",params, new RestManager.ListResourceListener<Event>() {
+            @Override
+            public void onResponse(int code, Map<String, String> headers,
+                                   List<Event> resources) {
+                Toast.makeText(ShowActivity.this, "成功list",Toast.LENGTH_SHORT).show();
+                for(Event e : resources)
+                    userJoinList.put(e.getId(),true);
+                getEvent();
+            }
+
+            @Override
+            public void onRedirect(int code, Map<String, String> headers, String url) {
+                onError(null, null, code, headers);
+            }
+
+            @Override
+            public void onError(String message, Throwable cause, int code,
+                                Map<String, String> headers) {
+                Log.d(this.getClass().getSimpleName(), "" + code + ": " + message);
+                Toast.makeText(ShowActivity.this, "無法list",Toast.LENGTH_SHORT).show();
+            }
+        }, null);
     }
 }
