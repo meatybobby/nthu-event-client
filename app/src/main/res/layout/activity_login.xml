@@ -8,20 +8,86 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin">
 
-
-
-    <TextView
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/app_name"
-        android:textColor="#ffffff"
-        android:textStyle="bold"
-        android:textSize="20pt"
-        android:layout_marginTop="50dp"
-        android:id="@+id/textView"
+        android:orientation="horizontal"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="N"
+            android:textColor="#5d3e20"
+            android:textStyle="bold"
+            android:textSize="20pt"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="T"
+            android:textColor="#ffffff"
+            android:textStyle="bold"
+            android:textSize="20pt"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="H"
+            android:textColor="#5d3e20"
+            android:textStyle="bold"
+            android:textSize="20pt"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="U"
+            android:textColor="#ffffff"
+            android:textStyle="bold"
+            android:textSize="20pt"
+            android:layout_marginRight="10dp"/>
 
-        android:layout_centerHorizontal="true"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Event"
+            android:textColor="#5d3e20"
+            android:textStyle="bold"
+            android:textSize="20pt"/>
+        <!--TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="v"
+            android:textColor="#ffffff"
+            android:textStyle="bold"
+            android:textSize="20pt"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="e"
+            android:textColor="#5d3e20"
+            android:textStyle="bold"
+            android:textSize="20pt"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="n"
+            android:textColor="#ffffff"
+            android:textStyle="bold"
+            android:textSize="20pt"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="t"
+            android:textColor="#5d3e20"
+            android:textStyle="bold"
+            android:textSize="20pt"/-->
+    </LinearLayout>
 
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/background_panda_small"
+        android:id="@+id/list_icon"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"/>
     <Button
         android:id="@+id/btn_login_with_facebook"
         style="@style/com_facebook_loginview_silver_style"
@@ -30,7 +96,7 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_gravity="bottom|center_horizontal"
-        android:layout_marginBottom="70dp"
+        android:layout_marginBottom="20dp"
         android:text="@string/btn_login_with_facebook"/>
 
 </RelativeLayout>

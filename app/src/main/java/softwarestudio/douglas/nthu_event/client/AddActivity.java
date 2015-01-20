@@ -63,17 +63,7 @@ public class AddActivity extends Activity {
         final Spinner spinner1 = (Spinner) findViewById(R.id.eventCat1);
         Spinner spinner2 = (Spinner) findViewById(R.id.eventCat2);
 
-        ArrayAdapter<CharSequence> adapter1 = ArrayAdapter.createFromResource(this,
-                R.array.events_category1, android.R.layout.simple_spinner_item);
-        adapter1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner1.setAdapter(adapter1);
-        spinner1.setOnItemSelectedListener(spnListener1);
 
-        ArrayAdapter<CharSequence> adapter2 = ArrayAdapter.createFromResource(this,
-                R.array.events_category2, android.R.layout.simple_spinner_item);
-        adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner2.setAdapter(adapter2);
-        spinner2.setOnItemSelectedListener(spnListener2);
 
         //chooseDateBtn.setOnClickListener(pickDateListener);
         //hour = UNSET_TIME; minute = UNSET_TIME;

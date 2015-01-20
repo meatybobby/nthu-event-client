@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:id="@+id/RootLayout"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical"
+    android:background="@color/background"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="0dp">
+
+            <Spinner
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:id="@+id/eventCat1"
+                android:layout_weight="2"/>
+
+            <Spinner
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:id="@+id/eventCat2"
+                android:layout_weight="2"/>
+            <Button
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:id="@+id/btn_update"
+                android:text="查詢"
+                android:layout_weight="1"/>
+
+    </LinearLayout>
+
+    <ListView android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/list_tags">
+    </ListView>
+
+</LinearLayout>

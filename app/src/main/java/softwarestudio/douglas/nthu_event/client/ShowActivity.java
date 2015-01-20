@@ -136,7 +136,7 @@ public class ShowActivity extends Activity {
     private void joinEvent(){
         Event event=new Event();
         event.setId(Long.parseLong(eventId));
-        restMgr.postUniversal(Event.class,"http://nthu-event-2014.appspot.com/users/join-event",event,new RestManager.PostResourceListener() {
+        restMgr.postUniversal(Event.class,getString(R.string.rest_server_url)+"users/join-event",event,new RestManager.PostResourceListener() {
             @Override
             public void onResponse(int code, Map<String, String> headers) {
                 getEvent();
@@ -167,7 +167,7 @@ public class ShowActivity extends Activity {
 
     private void loadUserJoin(){
         Map<String, String> params = new HashMap<String, String>();
-        restMgr.listUniversal(Event.class, "http://nthu-event-2014.appspot.com/users/join-event",params, new RestManager.ListResourceListener<Event>() {
+        restMgr.listUniversal(Event.class, getString(R.string.rest_server_url)+"users/join-event",params, new RestManager.ListResourceListener<Event>() {
             @Override
             public void onResponse(int code, Map<String, String> headers,
                                    List<Event> resources) {

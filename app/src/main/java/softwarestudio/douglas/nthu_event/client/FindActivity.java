@@ -37,7 +37,7 @@ public class FindActivity extends FragmentActivity implements ActionBar.TabListe
     private static final String TAG = FindActivity.class.getSimpleName();
     AppSectionsPagerAdapter mAppSectionsPagerAdapter;
     ViewPager mViewPager;
-    private static String[] tabsName = {"最新", "最近"/*, "最熱門", "分類"*/};
+    private static String[] tabsName = {"最新", "最近", "最熱門"/* "分類"*/};
 
     private RestManager mRestMgr;
 
