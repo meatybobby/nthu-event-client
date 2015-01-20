@@ -6,9 +6,15 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.View.MeasureSpec;
 import android.widget.Button;
+import android.widget.ListAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -17,7 +23,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import softwarestudio.douglas.nthu_event.client.adapter.CommentAdapter;
 import softwarestudio.douglas.nthu_event.client.model.Event;
+import softwarestudio.douglas.nthu_event.client.model.Comment;
 import softwarestudio.douglas.nthu_event.client.service.rest.RestManager;
 
 
@@ -31,6 +39,9 @@ public class ShowActivity extends Activity {
     private TextView numOfPeople;
     private String eventId;
     private Button joinBtn;
+    private ListView commentLv;
+    private ArrayList<Comment> cmtList = new ArrayList<Comment>();
+    private CommentAdapter cmtAdapter;
 
     private Map<Long,Boolean> userJoinList;
 
@@ -88,7 +99,15 @@ public class ShowActivity extends Activity {
         progressDialog.setMessage(getString(R.string.info_wait));
         progressDialog.setCancelable(false);
         progressDialog.show();
-        loadUserJoin();
+        loadUserJoin();//之後才get event
+
+        commentLv = (ListView) findViewById(R.id.list_3comment);
+        cmtAdapter =  new CommentAdapter(this, cmtList);
+        commentLv.setAdapter(cmtAdapter);
+        getComment();
+
+    }
+    private void getComment(){
 
     }
 
@@ -189,5 +208,27 @@ public class ShowActivity extends Activity {
                 Toast.makeText(ShowActivity.this, "無法list",Toast.LENGTH_SHORT).show();
             }
         }, null);
+    }
+
+    public static void setListViewHeightBasedOnChildren(ListView listView) {
+        ListAdapter listAdapter = listView.getAdapter();
+        if (listAdapter == null)
+            return;
+
+        int desiredWidth = MeasureSpec.makeMeasureSpec(listView.getWidth(), View.MeasureSpec.UNSPECIFIED);
+        int totalHeight = 0;
+        View view = null;
+        for (int i = 0; i < listAdapter.getCount(); i++) {
+            view = listAdapter.getView(i, view, listView);
+            if (i == 0)
+                view.setLayoutParams(new ViewGroup.LayoutParams(desiredWidth, ViewGroup.LayoutParams.WRAP_CONTENT));
+
+            view.measure(desiredWidth, MeasureSpec.UNSPECIFIED);
+            totalHeight += view.getMeasuredHeight();
+        }
+        ViewGroup.LayoutParams params = listView.getLayoutParams();
+        params.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
+        listView.setLayoutParams(params);
+        listView.requestLayout();
     }
 }
