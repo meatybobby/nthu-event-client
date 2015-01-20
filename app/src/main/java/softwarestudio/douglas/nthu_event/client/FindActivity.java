@@ -38,7 +38,7 @@ public class FindActivity extends FragmentActivity implements ActionBar.TabListe
     private static final String TAG = FindActivity.class.getSimpleName();
     AppSectionsPagerAdapter mAppSectionsPagerAdapter;
     ViewPager mViewPager;
-    private static String[] tabsName = {"最新", "最近", "最熱門"};
+    private static String[] tabsName = {"最新", "最近", "最熱門","分類"};
 
     private RestManager mRestMgr;
 
@@ -102,10 +102,10 @@ public class FindActivity extends FragmentActivity implements ActionBar.TabListe
         @Override
         public Fragment getItem(int i) {
             switch (i) {
-               // case 3:
+                case 3:
                     // The first section of the app is the most interesting -- it offers
                     // a launchpad into the other demonstrations in this example application.
-                   // return new EventTagFragment();
+                    return new EventTagFragment();
 
                 default:
                     // The other sections of the app are dummy placeholders.
@@ -158,7 +158,7 @@ public class FindActivity extends FragmentActivity implements ActionBar.TabListe
     private void getEvents(final String sortType){
 
         Map<String, String> params = new HashMap<String, String>();
-     /*   params.put("tag1", null);
+        /*params.put("tag1", null);
         params.put("tag2", null);*/
 
         params.put("SortType",sortType);//要求server根據參數不同有不同排序方式

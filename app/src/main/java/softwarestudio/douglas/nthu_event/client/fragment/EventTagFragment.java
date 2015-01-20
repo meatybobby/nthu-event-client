@@ -33,12 +33,13 @@ public class EventTagFragment extends Fragment {
 
     private ListView mListView;
     private EventAdapter mEventAdapter;
+    private static final String ALL_KINDS = "全部";
 
     private int secNum;
     private Button updateBtn;
     public static final String ARG_SECTION_NUMBER = "section_number";
     private Spinner spinner1, spinner2;
-    private String[] tag={"全部","全部"};
+    private String[] tag={ALL_KINDS,ALL_KINDS};
     private RestManager mRestMgr;
     private ArrayList<Event> eventList = new ArrayList<Event>();
     private ProgressDialog progressDialog;
@@ -113,8 +114,12 @@ public class EventTagFragment extends Fragment {
     private void getTagEvent(String tag1, String tag2){
         Map<String, String> params = new HashMap<String, String>();
 
-        params.put("tag1", tag1);
-        params.put("tag2", tag2);
+        if(!tag1.equals(ALL_KINDS)){
+            params.put("tag1", tag1);
+        }
+        if(!tag2.equals(ALL_KINDS)){
+            params.put("tag2", tag2);
+        }
 
         mRestMgr.listResource(Event.class, params, new RestManager.ListResourceListener<Event>() {
             @Override
