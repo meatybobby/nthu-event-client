@@ -108,6 +108,33 @@ public class ShowActivity extends Activity {
 
     }
     private void getComment(){
+        Map<String, String> params = new HashMap<String, String>();
+
+        restMgr.listResource(Comment.class, params, new RestManager.ListResourceListener<Comment>() {
+            @Override
+            public void onResponse(int code, Map<String, String> headers,
+                                   List<Comment> resources) {
+
+                cmtList.clear();
+                cmtList.addAll(resources);
+                progressDialog.dismiss();
+                Toast.makeText(ShowActivity.this, "成功list所有留言",Toast.LENGTH_SHORT).show();
+
+                setListViewHeightBasedOnChildren(commentLv);
+            }
+            @Override
+            public void onRedirect(int code, Map<String, String> headers, String url) {
+                onError(null, null, code, headers);
+            }
+
+            @Override
+            public void onError(String message, Throwable cause, int code,
+                                Map<String, String> headers) {
+                Log.d(this.getClass().getSimpleName(), "" + code + ": " + message);
+                progressDialog.dismiss();
+            }
+        }, null);
+
 
     }
 
