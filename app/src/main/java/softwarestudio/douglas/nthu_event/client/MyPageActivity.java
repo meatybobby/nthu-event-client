@@ -101,7 +101,7 @@ public class MyPageActivity extends FragmentActivity implements ActionBar.TabLis
     private void getEvents(final String type){
         Map<String, String> params = new HashMap<String, String>();
 
-        StringBuilder url = new StringBuilder("http://nthu-event-2014.appspot.com/users/");
+        StringBuilder url = new StringBuilder(getString(R.string.rest_server_url) + "users/");
         if(type.equals(JOIN_EVENT)){
             url.append("join-event");
         }

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="rest_server_url">http://nthu-event-2014.appspot.com/</string>
+    <string name="rest_server_url">http://nthu-event-2015.appspot.com/</string>
     <string name="fb_app_id">909694852382546</string>
     <string name="app_name">NTHU Event</string>
     <string name="action_settings">Settings</string>
@@ -25,6 +25,25 @@
         <item>其他</item>
     </string-array>
     <string-array name="events_category2">
+        <item>自然科技</item>
+        <item>人文藝術</item>
+        <item>社會</item>
+        <item>體育</item>
+        <item>綜合</item>
+    </string-array>
+
+
+    <string-array name="tag_1">
+        <item>全部</item>
+        <item>演講</item>
+        <item>社團</item>
+        <item>競賽</item>
+        <item>友會/系學會</item>
+        <item>校務單位</item>
+        <item>其他</item>
+    </string-array>
+    <string-array name="tag_2">
+        <item>全部</item>
         <item>自然科技</item>
         <item>人文藝術</item>
         <item>社會</item>

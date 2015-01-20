@@ -81,17 +81,13 @@ public class LoginActivity extends Activity {
                 Log.d(TAG, "FB login success, accessToken: " + fbAccessToken);
                 fbAccessToken = accessToken;
                 nthuEventLogin();
-
             }
-
             @Override
             public void onError(Exception e) {
                 Log.e(TAG, e.getMessage());
                 Toast.makeText(LoginActivity.this, getString(R.string.info_server_error),
                         Toast.LENGTH_SHORT).show();
-
                 progressDialog.dismiss();
-
             }
         });
     }
@@ -99,14 +95,14 @@ public class LoginActivity extends Activity {
     private void nthuEventLogin() {
         final Session s = new Session(fbAccessToken);
 
-        Log.d(TAG, "Posting CampusHunt session: " + s);
+        Log.d(TAG, "Posting NTHU Event session: " + s);
 
         restMgr.postResource(Session.class, s, new RestManager.PostResourceListener() {
 
             @Override
             public void onResponse(int code, Map<String, String> headers) {
 
-                Log.d(TAG, "CampusHunt session created. Code: " + code);
+                Log.d(TAG, "NTHU Event session created. Code: " + code);
 
                 s.currentSession = s;
                 proceedToMain();
@@ -125,14 +121,13 @@ public class LoginActivity extends Activity {
 
                 // New user
                 if (code == 404) {
-
                     Log.d(TAG, "New user!");
                     proceedToRegister();
 
                 } else {
 
-                    Log.e(TAG, "Cannot create CampusHunt session. Message: " + message, cause);
-                    Toast.makeText(LoginActivity.this, getString(R.string.info_server_error),
+                    Log.e(TAG, "Cannot create NTHU Event session. Message: " + message, cause);
+                    Toast.makeText(LoginActivity.this, "NTHU Event Server 問題 code:"+code,
                             Toast.LENGTH_SHORT).show();
 
                     progressDialog.dismiss();

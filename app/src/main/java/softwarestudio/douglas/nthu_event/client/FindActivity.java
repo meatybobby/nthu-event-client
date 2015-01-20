@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Map;
 
 import softwarestudio.douglas.nthu_event.client.adapter.EventAdapter;
+import softwarestudio.douglas.nthu_event.client.fragment.EventTagFragment;
 import softwarestudio.douglas.nthu_event.client.model.Event;
 import softwarestudio.douglas.nthu_event.client.service.rest.RestManager;
 
@@ -37,7 +38,7 @@ public class FindActivity extends FragmentActivity implements ActionBar.TabListe
     private static final String TAG = FindActivity.class.getSimpleName();
     AppSectionsPagerAdapter mAppSectionsPagerAdapter;
     ViewPager mViewPager;
-    private static String[] tabsName = {"最新", "最近", "最熱門"/* "分類"*/};
+    private static String[] tabsName = {"最新", "最近", "最熱門"};
 
     private RestManager mRestMgr;
 
@@ -101,10 +102,10 @@ public class FindActivity extends FragmentActivity implements ActionBar.TabListe
         @Override
         public Fragment getItem(int i) {
             switch (i) {
-               // case 0:
+               // case 3:
                     // The first section of the app is the most interesting -- it offers
                     // a launchpad into the other demonstrations in this example application.
-                   // return new LaunchpadSectionFragment();
+                   // return new EventTagFragment();
 
                 default:
                     // The other sections of the app are dummy placeholders.
@@ -147,6 +148,8 @@ public class FindActivity extends FragmentActivity implements ActionBar.TabListe
                             .setText(tabsName[i])
                             .setTabListener(this));
         }
+        Toast.makeText(FindActivity.this, "成功建立tab",
+                Toast.LENGTH_SHORT).show();
     }
     @Override
     public void onBackPressed(){
@@ -155,6 +158,9 @@ public class FindActivity extends FragmentActivity implements ActionBar.TabListe
     private void getEvents(final String sortType){
 
         Map<String, String> params = new HashMap<String, String>();
+     /*   params.put("tag1", null);
+        params.put("tag2", null);*/
+
         params.put("SortType",sortType);//要求server根據參數不同有不同排序方式
             mRestMgr.listResource(Event.class, params, new RestManager.ListResourceListener<Event>() {
                 @Override
@@ -176,6 +182,8 @@ public class FindActivity extends FragmentActivity implements ActionBar.TabListe
                     if(sortType.equals("hottest")){//所有get結束
                         createTab();
                         progressDialog.dismiss();
+                        Toast.makeText(FindActivity.this, "list所有活動",
+                                Toast.LENGTH_SHORT).show();
                     }
 
                 }
@@ -189,6 +197,8 @@ public class FindActivity extends FragmentActivity implements ActionBar.TabListe
                 public void onError(String message, Throwable cause, int code,
                                     Map<String, String> headers) {
                     Log.d(this.getClass().getSimpleName(), "" + code + ": " + message);
+                    Toast.makeText(FindActivity.this, "無法讀取活動",
+                            Toast.LENGTH_SHORT).show();
                     progressDialog.dismiss();
                 }
             }, null);
