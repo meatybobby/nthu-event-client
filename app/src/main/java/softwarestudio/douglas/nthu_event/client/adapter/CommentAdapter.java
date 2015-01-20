@@ -60,20 +60,22 @@ public class CommentAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        convertView = mMyInflater.inflate(R.layout.event_item, null);
-        Comment event = commentList.get(position);
+        convertView = mMyInflater.inflate(R.layout.comment_item, null);
+        Comment comment = commentList.get(position);
 
-        TextView titleTxt = (TextView) convertView.findViewById(R.id.txt_title);
-        TextView dateTxt = (TextView) convertView.findViewById(R.id.txt_date);
-        TextView joinNumTxt = (TextView) convertView.findViewById(R.id.txt_joinNum);
+        TextView userTxt = (TextView) convertView.findViewById(R.id.cmt_user);
+        TextView contentTxt = (TextView) convertView.findViewById(R.id.cmt_content);
+        TextView dateTxt = (TextView) convertView.findViewById(R.id.cmt_date);
 
-
+        userTxt.setText("");
+        contentTxt.setText("");
+        dateTxt.setText("");
 
         return convertView;
     }
 
     private String convertDate(long millis){
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd");
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd k:mm");
         return formatter.format( new Date(millis) );
     }
 
