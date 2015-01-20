@@ -305,6 +305,28 @@ public class RestManager {
         }
     }
 
+    public <T extends Resource> void deleteUniversal(Class<T> cls, String url,
+                                                    final DeleteResourceListener listener, String tag,
+                                                    Resource... parents) {
+        try {
+            Log.d(TAG, "Deleting resource from " + url + "...");
+            GsonRequest<T> req = new GsonRequest<T>(Request.Method.DELETE,
+                    url, null, null, cls,
+                    new Response.Listener<GsonResponse<T>>() {
+                        @Override
+                        public void onResponse(GsonResponse<T> gRes) {
+                            Log.d(TAG, "Response: " + gRes);
+                            if (listener != null)
+                                listener.onResponse(gRes.getCode(), gRes.getHeaders());
+                        }
+                    }, new RestErrorListener(listener));
+            req.setTag(tag);
+            reqQueue.add(req);
+        } catch (Exception e) {
+            listener.onError(e.getMessage(), e, 0, null);
+        }
+    }
+
     public void loadImage(String url, RestImageView view, RestImageView.ImageLoadListener
             listener) {
         view.setImageUrl(url, imgLoader, listener);

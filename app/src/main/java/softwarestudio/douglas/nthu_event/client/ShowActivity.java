@@ -67,18 +67,6 @@ public class ShowActivity extends Activity {
 
         userJoinList = new HashMap<Long,Boolean>();
 
-        joinBtn.setOnClickListener(new Button.OnClickListener(){
-            @Override
-            public void onClick(View view){
-                progressDialog.show();
-                joinEvent();
-                /*if(joinBtn.getText().toString().equals("參加")){
-                    joinBtn.setText("退出");
-                }else{
-                    joinBtn.setText("參加");
-                }*/
-            }
-        });
         commentBtn.setOnClickListener(new Button.OnClickListener(){
             @Override
             public void onClick(View view){
@@ -157,8 +145,22 @@ public class ShowActivity extends Activity {
 
                 if(checkUserJoin()){
                     joinBtn.setText("退出");
+                    joinBtn.setOnClickListener(new Button.OnClickListener(){
+                        @Override
+                        public void onClick(View view) {
+                            progressDialog.show();
+                            exitEvent();
+                        }
+                    });
                 }else{
                     joinBtn.setText("參加");
+                    joinBtn.setOnClickListener(new Button.OnClickListener(){
+                        @Override
+                        public void onClick(View view) {
+                            progressDialog.show();
+                            joinEvent();
+                        }
+                    });
                 }
                 Log.d(TAG, "event got:" + resource.getTitle());
             }
@@ -195,10 +197,30 @@ public class ShowActivity extends Activity {
 
             @Override
             public void onError(String message, Throwable cause, int code, Map<String, String> headers) {
-
+                Toast.makeText(ShowActivity.this, "參加活動失敗",Toast.LENGTH_SHORT).show();
+                progressDialog.dismiss();
             }
         },null);
 
+    }
+    private void exitEvent() {
+        restMgr.deleteUniversal(Event.class,getString(R.string.rest_server_url)+"users/join-event/"+eventId,new RestManager.DeleteResourceListener() {
+            @Override
+            public void onResponse(int code, Map<String, String> headers) {
+                getEvent();
+            }
+
+            @Override
+            public void onRedirect(int code, Map<String, String> headers, String url) {
+
+            }
+
+            @Override
+            public void onError(String message, Throwable cause, int code, Map<String, String> headers) {
+                Toast.makeText(ShowActivity.this, "退出活動失敗",Toast.LENGTH_SHORT).show();
+                progressDialog.dismiss();
+            }
+        },null);
     }
     private void commentEvent(){
 
