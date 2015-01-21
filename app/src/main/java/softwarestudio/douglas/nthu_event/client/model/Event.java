@@ -13,6 +13,7 @@ public class Event extends Resource<Long> implements Serializable {
     private String location;
     private String tag1;
     private String tag2;
+    private String posterName;
     private long time;
 
 
@@ -75,6 +76,13 @@ public class Event extends Resource<Long> implements Serializable {
     }
     public void setTimeStamp(long timeStamp) {
         this.timeStamp = timeStamp;
+    }
+    public String getPosterName() {
+        return posterName;
+    }
+
+    public void setPosterName(String posterName) {
+        this.posterName = posterName;
     }
 
 }

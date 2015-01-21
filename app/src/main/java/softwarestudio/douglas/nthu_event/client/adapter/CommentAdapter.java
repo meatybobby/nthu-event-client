@@ -67,9 +67,9 @@ public class CommentAdapter extends BaseAdapter {
         TextView contentTxt = (TextView) convertView.findViewById(R.id.cmt_content);
         TextView dateTxt = (TextView) convertView.findViewById(R.id.cmt_date);
 
-        userTxt.setText("");
-        contentTxt.setText("");
-        dateTxt.setText("");
+        userTxt.setText(comment.getUserName());
+        contentTxt.setText(comment.getContent());
+        dateTxt.setText(convertDate(comment.getTimeStamp()));
 
         return convertView;
     }

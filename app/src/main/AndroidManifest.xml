@@ -79,6 +79,7 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="softwarestudio.douglas.nthu_event.client.ShowActivity" />
+
         </activity>
 
 

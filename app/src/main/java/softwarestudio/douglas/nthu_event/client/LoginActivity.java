@@ -85,7 +85,7 @@ public class LoginActivity extends Activity {
             @Override
             public void onError(Exception e) {
                 Log.e(TAG, e.getMessage());
-                Toast.makeText(LoginActivity.this, getString(R.string.info_server_error),
+                Toast.makeText(LoginActivity.this, getString(R.string.info_server_error)+"FB server問題",
                         Toast.LENGTH_SHORT).show();
                 progressDialog.dismiss();
             }

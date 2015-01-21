@@ -15,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import org.w3c.dom.Text;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -35,10 +36,12 @@ public class ShowActivity extends Activity {
     private TextView eventName;
     private TextView eventTime;
     private TextView eventPlace;
+    private TextView eventHost;
     private TextView eventContent;
     private TextView numOfPeople;
     private String eventId;
     private Button joinBtn;
+
     private ListView commentLv;
     private ArrayList<Comment> cmtList = new ArrayList<Comment>();
     private CommentAdapter cmtAdapter;
@@ -58,6 +61,7 @@ public class ShowActivity extends Activity {
         eventName = (TextView) findViewById(R.id.event_name);
         eventTime = (TextView) findViewById(R.id.event_time);
         eventPlace = (TextView) findViewById(R.id.event_place);
+        eventHost = (TextView) findViewById(R.id.event_host);
         eventContent = (TextView) findViewById(R.id.event_content);
         numOfPeople = (TextView) findViewById(R.id.event_peopleNum);
 
@@ -82,7 +86,8 @@ public class ShowActivity extends Activity {
 
         Intent intent = this.getIntent();
         Bundle bundle = intent.getExtras();
-        eventId = bundle.getString("EventId");
+        eventId = bundle.getString("eventId");
+
         progressDialog = new ProgressDialog(ShowActivity.this);
         progressDialog.setMessage(getString(R.string.info_wait));
         progressDialog.setCancelable(false);
@@ -93,20 +98,24 @@ public class ShowActivity extends Activity {
         cmtAdapter =  new CommentAdapter(this, cmtList);
         commentLv.setAdapter(cmtAdapter);
         getComment();
-
     }
+
     private void getComment(){
         Map<String, String> params = new HashMap<String, String>();
-
-        restMgr.listResource(Comment.class, params, new RestManager.ListResourceListener<Comment>() {
+        StringBuilder url = new StringBuilder(getString(R.string.rest_server_url));
+        url.append("comment/");
+        url.append(eventId);
+        restMgr.listUniversal(Comment.class, url.toString(), params, new RestManager.ListResourceListener<Comment>() {
             @Override
             public void onResponse(int code, Map<String, String> headers,
                                    List<Comment> resources) {
 
                 cmtList.clear();
-                cmtList.addAll(resources);
+                int n = resources.size();
+                for(int i=n-1; i>n-4; i--)/*最下面的三則留言*/
+                    cmtList.add(resources.get(i));
                 progressDialog.dismiss();
-                Toast.makeText(ShowActivity.this, "成功list所有留言",Toast.LENGTH_SHORT).show();
+                //Toast.makeText(ShowActivity.this, "成功list所有留言",Toast.LENGTH_SHORT).show();
 
                 setListViewHeightBasedOnChildren(commentLv);
             }
@@ -119,11 +128,10 @@ public class ShowActivity extends Activity {
             public void onError(String message, Throwable cause, int code,
                                 Map<String, String> headers) {
                 Log.d(this.getClass().getSimpleName(), "" + code + ": " + message);
+                Toast.makeText(ShowActivity.this, "留言讀取失敗", Toast.LENGTH_SHORT).show();
                 progressDialog.dismiss();
             }
         }, null);
-
-
     }
 
     private boolean checkUserJoin(){/*若user有參加該event 回傳true*/
@@ -139,6 +147,7 @@ public class ShowActivity extends Activity {
                 eventName.setText(resource.getTitle());
                 eventTime.setText(convertDate(resource.getTime()));
                 eventPlace.setText(resource.getLocation());
+                eventHost.setText(resource.getPosterName());
                 eventContent.setText(resource.getDescription());
                 numOfPeople.setText(Integer.toString(resource.getJoinNum()));
                 progressDialog.dismiss();
@@ -163,6 +172,8 @@ public class ShowActivity extends Activity {
                     });
                 }
                 Log.d(TAG, "event got:" + resource.getTitle());
+                //Toast.makeText(ShowActivity.this, "順利讀取活動",
+                       // Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -223,13 +234,24 @@ public class ShowActivity extends Activity {
         },null);
     }
     private void commentEvent(){
-
+        Intent intent = new Intent(this, CommentActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString("eventName", eventName.getText().toString());
+        bundle.putString("eventId", eventId);
+        intent.putExtras(bundle);
+        startActivityForResult(intent, 1);
+    }
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == RESULT_OK) {
+            getComment();
+        }
     }
     private void bookmarkEvent(){
 
     }
     private String convertDate(long millis){
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd hh:mm (a)");
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy/M/d h:mm (a)");
         return formatter.format( new Date(millis) );
     }
 
@@ -239,7 +261,7 @@ public class ShowActivity extends Activity {
             @Override
             public void onResponse(int code, Map<String, String> headers,
                                    List<Event> resources) {
-                Toast.makeText(ShowActivity.this, "成功list",Toast.LENGTH_SHORT).show();
+                //Toast.makeText(ShowActivity.this, "成功list",Toast.LENGTH_SHORT).show();
                 for(Event e : resources)
                     userJoinList.put(e.getId(),true);
                 getEvent();
@@ -267,7 +289,7 @@ public class ShowActivity extends Activity {
         int desiredWidth = MeasureSpec.makeMeasureSpec(listView.getWidth(), View.MeasureSpec.UNSPECIFIED);
         int totalHeight = 0;
         View view = null;
-        for (int i = 0; i < listAdapter.getCount(); i++) {
+        for (int i = 0; i < 3; i++) {
             view = listAdapter.getView(i, view, listView);
             if (i == 0)
                 view.setLayoutParams(new ViewGroup.LayoutParams(desiredWidth, ViewGroup.LayoutParams.WRAP_CONTENT));

@@ -31,7 +31,26 @@
                 android:background="@color/listColor2"
                 android:padding="10dp"
                 />
-
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="發佈人："
+                    android:textStyle="bold"
+                    android:textColor="@color/panda_brown"
+                    android:layout_gravity="start"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginRight="5dp"/>
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:id="@+id/event_host"/>
+            </LinearLayout>
             <LinearLayout
                 android:layout_height="wrap_content"
                 android:layout_width="fill_parent"
@@ -75,6 +94,7 @@
             </LinearLayout>
 
 
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -87,8 +107,10 @@
             <TextView
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:padding="8dp"
                 android:layout_marginBottom="20dp"
+                android:background="#ffffff"
+                android:text="測試活動，測試活動，測試活動，測試活動，測試活動，測試活動，測試活動。"
                 android:id="@+id/event_content"/>
             <LinearLayout
                 android:layout_width="fill_parent"
@@ -141,7 +163,7 @@
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:text="留言"
+                    android:text="最新留言"
                     android:gravity="center"
                     android:id="@+id/textView6"
                     android:layout_gravity="center_horizontal"

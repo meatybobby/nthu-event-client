@@ -103,7 +103,7 @@ public class EventTagFragment extends Fragment {
                // Log.d(TAG, "event clicked:" + event.getId().toString());
                     /*Event class有implement Serializable 所以可以用intent傳*/
                     Bundle bundle = new Bundle();
-                    bundle.putString("EventId", event.getId().toString());
+                    bundle.putString("eventId", event.getId().toString());
                     intent.putExtras(bundle);
                     startActivity(intent);
                 }
