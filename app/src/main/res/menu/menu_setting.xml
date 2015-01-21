@@ -1,8 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <!--item
+        android:id="@+id/action_find"
+        android:icon="@drawable/menu_find_2"
+        android:title="找活動"
+
+        android:showAsAction="always" />
+
+    <item
+        android:id="@+id/action_add"
+        android:icon="@drawable/menu_add_4"
+        android:title="辦活動"
+        android:showAsAction="always"/>
+    <item
+        android:id="@+id/action_user"
+        android:icon="@drawable/menu_user"
+        android:title="個人中心"
+        android:showAsAction="always"/>
     <item
     android:id="@+id/action_about"
-    android:title="關於我們"/>
+    android:title="關於我們"/-->
     <item
         android:id="@+id/action_logout"
         android:title="登出"/>
