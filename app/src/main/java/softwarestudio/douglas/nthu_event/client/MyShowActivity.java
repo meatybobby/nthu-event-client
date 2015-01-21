@@ -5,14 +5,19 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
-import android.view.View.MeasureSpec;
 import android.view.ViewGroup;
+import android.view.View.MeasureSpec;
 import android.widget.Button;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+
+import org.w3c.dom.Text;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -22,19 +27,21 @@ import java.util.List;
 import java.util.Map;
 
 import softwarestudio.douglas.nthu_event.client.adapter.CommentAdapter;
-import softwarestudio.douglas.nthu_event.client.model.Comment;
 import softwarestudio.douglas.nthu_event.client.model.Event;
+import softwarestudio.douglas.nthu_event.client.model.Comment;
 import softwarestudio.douglas.nthu_event.client.service.rest.RestManager;
 
 
 public class MyShowActivity extends Activity {
 
-    private static final String TAG = MyShowActivity.class.getSimpleName();
+    private static final String TAG = ShowActivity.class.getSimpleName();
     private TextView eventName;
     private TextView eventTime;
     private TextView eventPlace;
     private TextView eventHost;
     private TextView eventContent;
+    private TextView eventTag1;
+    private TextView eventTag2;
     private TextView numOfPeople;
     private String eventId;
     private Button joinBtn;
@@ -60,6 +67,8 @@ public class MyShowActivity extends Activity {
         eventPlace = (TextView) findViewById(R.id.event_place);
         eventHost = (TextView) findViewById(R.id.event_host);
         eventContent = (TextView) findViewById(R.id.event_content);
+        eventTag1 = (TextView)findViewById(R.id.event_tag1);
+        eventTag2 = (TextView)findViewById(R.id.event_tag2);
         numOfPeople = (TextView) findViewById(R.id.event_peopleNum);
 
         joinBtn = (Button) findViewById(R.id.btn_join);
@@ -103,24 +112,44 @@ public class MyShowActivity extends Activity {
         @Override
         public void onClick(View view){
             if(joinBtn.getText().toString().equals("參加")){
-                joinBtn.setText("退出");
-                //Integer.toString
-                String curNum = numOfPeople.getText().toString();
-                String newNum = Integer.toString(Integer.parseInt(curNum)+1);
-                numOfPeople.setText(newNum);
+
                 progressDialog.show();
                 joinEvent();
             }
             else{
-                joinBtn.setText("參加");
-                String curNum = numOfPeople.getText().toString();
-                String newNum = Integer.toString(Integer.parseInt(curNum)-1);
-                numOfPeople.setText(newNum);
+
                 progressDialog.show();
                 exitEvent();
             }
         }
     };
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle the action bar items pressed
+        Intent intent;
+        switch (item.getItemId()) {
+            case R.id.action_find:
+                intent = new Intent(this, FindActivity.class);
+                startActivity(intent);
+                return true;
+            case R.id.action_add:
+                intent = new Intent(this, AddActivity.class);
+                startActivity(intent);
+                return true;
+            case R.id.action_user:
+                intent = new Intent(this, MyPageActivity.class);
+                startActivity(intent);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
     private void getComment(){
         Map<String, String> params = new HashMap<String, String>();
         StringBuilder url = new StringBuilder(getString(R.string.rest_server_url));
@@ -171,10 +200,12 @@ public class MyShowActivity extends Activity {
                 eventPlace.setText(resource.getLocation());
                 eventHost.setText(resource.getPosterName());
                 eventContent.setText(resource.getDescription());
+                eventTag1.setText(resource.getTag1());
+                eventTag2.setText(resource.getTag2());
                 numOfPeople.setText(Integer.toString(resource.getJoinNum()));
                 Log.d(TAG, "event got:" + resource.getTitle());
                 //Toast.makeText(ShowActivity.this, "順利讀取活動",
-                       // Toast.LENGTH_SHORT).show();
+                // Toast.LENGTH_SHORT).show();
                 progressDialog.dismiss();
             }
 
@@ -200,6 +231,10 @@ public class MyShowActivity extends Activity {
         restMgr.postUniversal(Event.class,getString(R.string.rest_server_url)+"users/join-event",event,new RestManager.PostResourceListener() {
             @Override
             public void onResponse(int code, Map<String, String> headers) {
+                joinBtn.setText("退出");
+                String curNum = numOfPeople.getText().toString();
+                String newNum = Integer.toString(Integer.parseInt(curNum)+1);
+                numOfPeople.setText(newNum);
                 progressDialog.dismiss();
             }
 
@@ -220,6 +255,10 @@ public class MyShowActivity extends Activity {
         restMgr.deleteUniversal(Event.class,getString(R.string.rest_server_url)+"users/join-event/"+eventId,new RestManager.DeleteResourceListener() {
             @Override
             public void onResponse(int code, Map<String, String> headers) {
+                joinBtn.setText("參加");
+                String curNum = numOfPeople.getText().toString();
+                String newNum = Integer.toString(Integer.parseInt(curNum)-1);
+                numOfPeople.setText(newNum);
                 progressDialog.dismiss();
             }
 
@@ -294,7 +333,7 @@ public class MyShowActivity extends Activity {
         if (listAdapter == null)
             return;
 
-        int desiredWidth = MeasureSpec.makeMeasureSpec(listView.getWidth(), MeasureSpec.UNSPECIFIED);
+        int desiredWidth = MeasureSpec.makeMeasureSpec(listView.getWidth(), View.MeasureSpec.UNSPECIFIED);
         int totalHeight = 0;
         View view = null;
         int n = listAdapter.getCount();
