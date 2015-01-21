@@ -191,8 +191,8 @@ public class CommentActivity extends Activity {
         int desiredWidth = View.MeasureSpec.makeMeasureSpec(listView.getWidth(), View.MeasureSpec.UNSPECIFIED);
         int totalHeight = 0;
         View view = null;
-        int n = listAdapter.getCount();
-        for (int i = 0; i < (n<=3 ? n:3) ; i++) {
+
+        for (int i = 0; i < listAdapter.getCount() ; i++) {
             view = listAdapter.getView(i, view, listView);
             if (i == 0)
                 view.setLayoutParams(new ViewGroup.LayoutParams(desiredWidth, ViewGroup.LayoutParams.WRAP_CONTENT));
@@ -200,6 +200,7 @@ public class CommentActivity extends Activity {
             view.measure(desiredWidth, View.MeasureSpec.UNSPECIFIED);
             totalHeight += view.getMeasuredHeight();
         }
+        totalHeight += 50;
         ViewGroup.LayoutParams params = listView.getLayoutParams();
         params.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
         listView.setLayoutParams(params);
