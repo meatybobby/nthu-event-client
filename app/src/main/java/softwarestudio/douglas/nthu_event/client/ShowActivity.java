@@ -343,9 +343,8 @@ public class ShowActivity extends Activity {
                 view.setLayoutParams(new ViewGroup.LayoutParams(desiredWidth, ViewGroup.LayoutParams.WRAP_CONTENT));
 
             view.measure(desiredWidth, MeasureSpec.UNSPECIFIED);
-            totalHeight += view.getMeasuredHeight();
+            totalHeight += view.getMeasuredHeight()+20;
         }
-        totalHeight += 20;
         ViewGroup.LayoutParams params = listView.getLayoutParams();
         params.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
         listView.setLayoutParams(params);
