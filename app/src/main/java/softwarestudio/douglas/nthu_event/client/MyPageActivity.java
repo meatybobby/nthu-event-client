@@ -39,11 +39,12 @@ public class MyPageActivity extends FragmentActivity implements ActionBar.TabLis
     private static final String[] tabsName = {"參加的活動","舉辦的活動"/*,"收藏"*/};
     public static ArrayList<Event> joinEventList = new ArrayList<Event>();
     public static ArrayList<Event> hostEventList = new ArrayList<Event>();
-    private static ProgressDialog progressDialog;
+    private ProgressDialog progressDialog;
     private RestManager restMgr;
     private static final String JOIN_EVENT = "join";
     private static final String HOST_EVENT = "host";
 
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_find);
@@ -101,7 +102,8 @@ public class MyPageActivity extends FragmentActivity implements ActionBar.TabLis
     private void getEvents(final String type){
         Map<String, String> params = new HashMap<String, String>();
 
-        StringBuilder url = new StringBuilder(getString(R.string.rest_server_url) + "users/");
+        StringBuilder url = new StringBuilder(getString(R.string.rest_server_url));
+        url.append("users/");
         if(type.equals(JOIN_EVENT)){
             url.append("join-event");
         }
@@ -113,7 +115,6 @@ public class MyPageActivity extends FragmentActivity implements ActionBar.TabLis
             @Override
             public void onResponse(int code, Map<String, String> headers,
                                    List<Event> resources) {
-
                 if(type.equals(JOIN_EVENT)){
                     joinEventList.clear();
                     joinEventList.addAll(resources);
@@ -124,7 +125,7 @@ public class MyPageActivity extends FragmentActivity implements ActionBar.TabLis
                     progressDialog.dismiss();
                     createTab();
                 }
-                Toast.makeText(MyPageActivity.this, "成功讀取活動 " + type,Toast.LENGTH_SHORT).show();
+              //  Toast.makeText(MyPageActivity.this, "成功讀取活動 " + type,Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -136,7 +137,7 @@ public class MyPageActivity extends FragmentActivity implements ActionBar.TabLis
             public void onError(String message, Throwable cause, int code,
                                 Map<String, String> headers) {
                 Log.d(this.getClass().getSimpleName(), "" + code + ": " + message);
-                Toast.makeText(MyPageActivity.this, "無法list",Toast.LENGTH_SHORT).show();
+                Toast.makeText(MyPageActivity.this, "無法list"+type ,Toast.LENGTH_SHORT).show();
             }
         }, null);
     }
@@ -182,10 +183,10 @@ public class MyPageActivity extends FragmentActivity implements ActionBar.TabLis
             /*之後用拿到的參數來判斷要如何排序Events*/
             secNum = args.getInt(ARG_SECTION_NUMBER);
             switch (secNum){
-                case 1:
+                case 0:
                     mEventAdapter = new EventAdapter(getActivity(), joinEventList);
                     break;
-                case 2:
+                case 1:
                     mEventAdapter = new EventAdapter(getActivity(), hostEventList);
                     break;
                 default:
@@ -212,10 +213,18 @@ public class MyPageActivity extends FragmentActivity implements ActionBar.TabLis
 
                     /*Event class有implement Serializable 所以可以用intent傳*/
             Bundle bundle = new Bundle();
-            bundle.putString("EventId", event.getId().toString());
+            bundle.putString("eventId", event.getId().toString());
             intent.putExtras(bundle);
-            startActivity(intent);
+            startActivityForResult(intent, 1);
+           // getActivity().finish();
         }
 
+    }
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        mAppSectionsPagerAdapter.notifyDataSetChanged();
+        /* mAppSectionsPagerAdapter = new AppSectionsPagerAdapter(getSupportFragmentManager(),tabsName.length);
+        getEvents(JOIN_EVENT);
+        getEvents(HOST_EVENT);*/
     }
 }

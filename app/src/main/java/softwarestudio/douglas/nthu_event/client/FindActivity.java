@@ -148,8 +148,8 @@ public class FindActivity extends FragmentActivity implements ActionBar.TabListe
                             .setText(tabsName[i])
                             .setTabListener(this));
         }
-        Toast.makeText(FindActivity.this, "成功建立tab",
-                Toast.LENGTH_SHORT).show();
+      /*  Toast.makeText(FindActivity.this, "成功建立tab",
+                Toast.LENGTH_SHORT).show();*/
     }
     @Override
     public void onBackPressed(){
@@ -182,8 +182,8 @@ public class FindActivity extends FragmentActivity implements ActionBar.TabListe
                     if(sortType.equals("hottest")){//所有get結束
                         createTab();
                         progressDialog.dismiss();
-                        Toast.makeText(FindActivity.this, "list所有活動",
-                                Toast.LENGTH_SHORT).show();
+                      /*  Toast.makeText(FindActivity.this, "list所有活動",
+                                Toast.LENGTH_SHORT).show();*/
                     }
 
                 }

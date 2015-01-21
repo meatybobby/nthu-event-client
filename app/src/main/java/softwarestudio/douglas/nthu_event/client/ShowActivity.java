@@ -162,10 +162,6 @@ public class ShowActivity extends Activity {
             }
         }, null);
     }
-
-    private boolean checkUserJoin(){/*若user有參加該event 回傳true*/
-        return userJoinMap.containsKey(Long.parseLong(eventId));
-    }
     private void getEvent(){
         Map<String, String> header = new HashMap<>();
 
@@ -179,27 +175,6 @@ public class ShowActivity extends Activity {
                 eventHost.setText(resource.getPosterName());
                 eventContent.setText(resource.getDescription());
                 numOfPeople.setText(Integer.toString(resource.getJoinNum()));
-
-
-                if(checkUserJoin()){
-                    joinBtn.setText("退出");
-                    /*joinBtn.setOnClickListener(new Button.OnClickListener(){
-                        @Override
-                        public void onClick(View view) {
-                            progressDialog.show();
-                            exitEvent();
-                        }
-                    });*/
-                }else{
-                    joinBtn.setText("參加");
-                    /*joinBtn.setOnClickListener(new Button.OnClickListener(){
-                        @Override
-                        public void onClick(View view) {
-                            progressDialog.show();
-                            joinEvent();
-                        }
-                    });*/
-                }
                 Log.d(TAG, "event got:" + resource.getTitle());
                 //Toast.makeText(ShowActivity.this, "順利讀取活動",
                        // Toast.LENGTH_SHORT).show();
@@ -283,7 +258,9 @@ public class ShowActivity extends Activity {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy/M/d h:mm (a)");
         return formatter.format( new Date(millis) );
     }
-
+    private boolean checkUserJoin(){/*若user有參加該event 回傳true*/
+        return userJoinMap.containsKey(Long.parseLong(eventId));
+    }
     private void loadUserJoin(){
         Map<String, String> params = new HashMap<String, String>();
         restMgr.listUniversal(Event.class, getString(R.string.rest_server_url)+"users/join-event",params, new RestManager.ListResourceListener<Event>() {
@@ -293,6 +270,11 @@ public class ShowActivity extends Activity {
                 //Toast.makeText(ShowActivity.this, "成功list",Toast.LENGTH_SHORT).show();
                 for(Event e : resources)
                     userJoinMap.put(e.getId(),true);
+                if(checkUserJoin()){
+                    joinBtn.setText("退出");
+                }else{
+                    joinBtn.setText("參加");
+                }
                 //getEvent();
             }
 
