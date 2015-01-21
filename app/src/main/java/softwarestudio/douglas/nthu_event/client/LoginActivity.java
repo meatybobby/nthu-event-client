@@ -145,20 +145,20 @@ public class LoginActivity extends Activity {
         Intent intent = new Intent(this, MainActivity.class);
 
         startActivity(intent);
-        finish();
+       // finish();
     }
 
     private void proceedToRegister() {
         final User u = new User(fbAccessToken);
 
-        Log.d(TAG, "Posting CampusHunt session: " + u);
+        Log.d(TAG, "Posting NTHU Event session: " + u);
 
         restMgr.postResource(User.class, u, new RestManager.PostResourceListener() {
 
             @Override
             public void onResponse(int code, Map<String, String> headers) {
 
-                Log.d(TAG, "CampusHunt session created. Code: " + code);
+                Log.d(TAG, "NTHU Event session created. Code: " + code);
 
                 proceedToMain();
 

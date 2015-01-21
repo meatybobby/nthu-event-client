@@ -23,7 +23,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="活動名稱"
+                android:text=""
                 android:id="@+id/event_name"
                 android:layout_gravity="center_horizontal"
                 android:gravity="center"
@@ -110,8 +110,33 @@
                 android:padding="8dp"
                 android:layout_marginBottom="20dp"
                 android:background="#ffffff"
-                android:text="測試活動，測試活動，測試活動，測試活動，測試活動，測試活動，測試活動。"
+                android:text=""
                 android:id="@+id/event_content"/>
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="分類："
+                    android:textStyle="bold"
+                    android:textColor="@color/panda_brown"
+                    android:layout_gravity="start"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginRight="5dp"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:id="@+id/event_tag1"
+                    android:text=""
+                    android:layout_marginRight="8dp"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:text=""
+                    android:id="@+id/event_tag2"/>
+            </LinearLayout>
             <LinearLayout
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
@@ -121,6 +146,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="即將出席人數："
+                    android:textColor="@color/panda_brown"
                     android:layout_gravity="bottom" />
 
                 <TextView
@@ -130,6 +156,7 @@
                     android:layout_gravity="bottom"
                     android:id="@+id/event_peopleNum"/>
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
@@ -139,12 +166,14 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="參加"
-                    android:id="@+id/btn_join"/>
+                    android:id="@+id/btn_join"
+                    />
                 <Button
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="留言"
-                    android:id="@+id/btn_comment"/>
+                    android:id="@+id/btn_comment"
+                    />
                 <!--Button
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

@@ -15,6 +15,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.app.NavUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -38,7 +39,7 @@ public class FindActivity extends FragmentActivity implements ActionBar.TabListe
     private static final String TAG = FindActivity.class.getSimpleName();
     AppSectionsPagerAdapter mAppSectionsPagerAdapter;
     ViewPager mViewPager;
-    private static String[] tabsName = {"最新", "最近", "最熱門","分類"};
+    private static String[] tabsName = {"最新", "最近", "最熱門","為您推薦","分類"};
 
     private RestManager mRestMgr;
 
@@ -46,6 +47,7 @@ public class FindActivity extends FragmentActivity implements ActionBar.TabListe
     public static ArrayList<Event> eventList1 = new ArrayList<Event>();
     public static ArrayList<Event> eventList2 = new ArrayList<Event>();
     public static ArrayList<Event> eventList3 = new ArrayList<Event>();
+    public static ArrayList<Event> eventList4 = new ArrayList<Event>();
     //private HashMap<Long> userInEvent;
     //private static EventAdapter eventAdapter1;
 
@@ -68,7 +70,8 @@ public class FindActivity extends FragmentActivity implements ActionBar.TabListe
         progressDialog.show();
         getEvents("latest");
         getEvents("nearest");
-        getEvents("hottest");//一次抓完所有Event 不同fragment分別再排序
+        getEvents("hottest");
+        getEvents("recommend");//一次抓完所有Event 不同fragment分別再排序
     }
 
 
@@ -102,7 +105,7 @@ public class FindActivity extends FragmentActivity implements ActionBar.TabListe
         @Override
         public Fragment getItem(int i) {
             switch (i) {
-                case 3:
+                case 4:
                     // The first section of the app is the most interesting -- it offers
                     // a launchpad into the other demonstrations in this example application.
                     return new EventTagFragment();
@@ -152,6 +155,36 @@ public class FindActivity extends FragmentActivity implements ActionBar.TabListe
                 Toast.LENGTH_SHORT).show();*/
     }
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle the action bar items pressed
+        Intent intent;
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+            case R.id.action_find:
+                intent = new Intent(this, FindActivity.class);
+                startActivity(intent);
+                finish();
+                return true;
+            case R.id.action_add:
+                intent = new Intent(this, AddActivity.class);
+                startActivity(intent);
+                return true;
+            case R.id.action_user:
+                intent = new Intent(this, MyPageActivity.class);
+                startActivity(intent);
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+    @Override
     public void onBackPressed(){
         finish();
     }
@@ -177,9 +210,12 @@ public class FindActivity extends FragmentActivity implements ActionBar.TabListe
                     else if(sortType.equals("hottest")){
                         eventList3.clear();
                         eventList3.addAll(resources);
+                    }else{
+                        eventList4.clear();
+                        eventList4.addAll(resources);
                     }
 
-                    if(sortType.equals("hottest")){//所有get結束
+                    if(sortType.equals("recommend")){//所有get結束
                         createTab();
                         progressDialog.dismiss();
                       /*  Toast.makeText(FindActivity.this, "list所有活動",
@@ -215,9 +251,6 @@ public class FindActivity extends FragmentActivity implements ActionBar.TabListe
         @Override
         public void onCreate(Bundle savedInstanceState){
             super.onCreate(savedInstanceState);
-
-
-
         }
         @Override
         public void onActivityCreated(Bundle savedInstanceState){
@@ -236,8 +269,11 @@ public class FindActivity extends FragmentActivity implements ActionBar.TabListe
                 case 3:
                     mEventAdapter = new EventAdapter(getActivity(), eventList3);
                     break;
+                case 4:
+                    mEventAdapter = new EventAdapter(getActivity(), eventList4);
+                    break;
                 default:
-                    mEventAdapter = new EventAdapter(getActivity(), eventList3);
+                    mEventAdapter = new EventAdapter(getActivity(), eventList1);
             }
             setListAdapter(mEventAdapter);
             mEventAdapter.notifyDataSetChanged();

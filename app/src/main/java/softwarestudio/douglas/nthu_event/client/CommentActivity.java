@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -80,16 +81,36 @@ public class CommentActivity extends Activity {
 
     }
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle the action bar items pressed
+        Intent intent;
         switch (item.getItemId()) {
-            // Respond to the action bar's Up/Home button
             case android.R.id.home:
                 finish();
                 //NavUtils.navigateUpFromSameTask(this);
                 return true;
+            case R.id.action_find:
+                intent = new Intent(this, FindActivity.class);
+                startActivity(intent);
+                return true;
+            case R.id.action_add:
+                intent = new Intent(this, AddActivity.class);
+                startActivity(intent);
+                return true;
+            case R.id.action_user:
+                intent = new Intent(this, MyPageActivity.class);
+                startActivity(intent);
+            default:
+                return super.onOptionsItemSelected(item);
         }
-        return super.onOptionsItemSelected(item);
     }
+
     private void getComment() {
         Map<String, String> params = new HashMap<String, String>();
         StringBuilder url = new StringBuilder(getString(R.string.rest_server_url));

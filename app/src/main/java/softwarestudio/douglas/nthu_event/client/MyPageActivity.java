@@ -15,6 +15,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.app.NavUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -62,7 +63,37 @@ public class MyPageActivity extends FragmentActivity implements ActionBar.TabLis
         getEvents(HOST_EVENT);
 
     }
-
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle the action bar items pressed
+        Intent intent;
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+            case R.id.action_add:
+                intent = new Intent(this, AddActivity.class);
+                startActivity(intent);
+                return true;
+            case R.id.action_find:
+                intent = new Intent(this, FindActivity.class);
+                startActivity(intent);
+                return true;
+            case R.id.action_user:
+                intent = new Intent(this, MyPageActivity.class);
+                startActivity(intent);
+                finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
 
     @Override
     public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
