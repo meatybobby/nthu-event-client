@@ -4,26 +4,39 @@
     android:layout_height="match_parent"
     android:background="@color/listColor1"
     >
-
-    <TextView
+<ScrollView
+    android:layout_width="fill_parent"
+    android:layout_height="0dp"
+    android:layout_weight="9">
+    <LinearLayout
         android:layout_width="fill_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="留言"
-        android:gravity="center"
-        android:background="@color/listColor2"
-        android:id="@+id/comment_eventName"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="16dp"
-        />
+        android:layout_height="fill_parent"
+        android:orientation="vertical">
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="留言"
+            android:padding="8dp"
+            android:gravity="center"
+            android:background="@color/listColor2"
+            android:id="@+id/comment_eventName"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="16dp"
+            />
 
-    <ListView
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="9"
-        android:id="@+id/cmtListView"
-        android:layout_gravity="center_horizontal" />
+        <ListView
+            android:layout_width="match_parent"
+            android:layout_height="fill_parent"
+            android:id="@+id/cmtListView"
+            android:layout_gravity="center_horizontal" />
+
+
+    </LinearLayout>
+
+
+
+</ScrollView>
 
     <RelativeLayout
         android:layout_width="fill_parent"
@@ -49,6 +62,7 @@
             android:id="@+id/submitBtn"/>
 
     </RelativeLayout>
+
 
 
 

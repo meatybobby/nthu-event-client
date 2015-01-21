@@ -45,6 +45,17 @@
             android:layout_gravity="end"
             style="@style/com_facebook_loginview_silver_style"
         />
+        <Button
+            android:id="@+id/angry_btn"
+
+            android:text="找活動"
+            android:textColor="#FFFFFF"
+            android:textSize="30sp"
+
+            android:layout_width="230dp"
+            android:layout_height="60dp"
+            android:background="@drawable/button_shape_find"
+            />
 
     </LinearLayout>
 
