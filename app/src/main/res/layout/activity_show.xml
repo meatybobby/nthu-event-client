@@ -145,11 +145,11 @@
                     android:layout_height="wrap_content"
                     android:text="留言"
                     android:id="@+id/btn_comment"/>
-                <Button
+                <!--Button
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="收藏"
-                    android:id="@+id/btn_bookmark"/>
+                    android:id="@+id/btn_bookmark"/-->
 
 
             </LinearLayout>
@@ -167,7 +167,6 @@
                     android:gravity="center"
                     android:id="@+id/textView6"
                     android:layout_gravity="center_horizontal"
-                    android:layout_weight="0.51"
                     android:background="@color/listColor2"
                     android:padding="8dp" />
 

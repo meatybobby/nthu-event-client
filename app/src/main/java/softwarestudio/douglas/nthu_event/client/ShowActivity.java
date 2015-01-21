@@ -46,7 +46,7 @@ public class ShowActivity extends Activity {
     private ArrayList<Comment> cmtList = new ArrayList<Comment>();
     private CommentAdapter cmtAdapter;
 
-    private Map<Long,Boolean> userJoinList;
+    private Map<Long,Boolean> userJoinMap;
 
     private ProgressDialog progressDialog;
 
@@ -67,9 +67,9 @@ public class ShowActivity extends Activity {
 
         joinBtn = (Button) findViewById(R.id.btn_join);
         Button commentBtn = (Button) findViewById(R.id.btn_comment);
-        Button bookmarkBtn = (Button) findViewById(R.id.btn_bookmark);
+        //Button bookmarkBtn = (Button) findViewById(R.id.btn_bookmark);
 
-        userJoinList = new HashMap<Long,Boolean>();
+        userJoinMap = new HashMap<Long,Boolean>();
 
         commentBtn.setOnClickListener(new Button.OnClickListener(){
             @Override
@@ -77,12 +77,13 @@ public class ShowActivity extends Activity {
                 commentEvent();
             }
         });
-        bookmarkBtn.setOnClickListener(new Button.OnClickListener(){
+       /* bookmarkBtn.setOnClickListener(new Button.OnClickListener(){
             @Override
             public void onClick(View view){
                 bookmarkEvent();
             }
-        });
+        });*/
+        joinBtn.setOnClickListener(joinListener);
 
         Intent intent = this.getIntent();
         Bundle bundle = intent.getExtras();
@@ -92,14 +93,37 @@ public class ShowActivity extends Activity {
         progressDialog.setMessage(getString(R.string.info_wait));
         progressDialog.setCancelable(false);
         progressDialog.show();
-        loadUserJoin();//之後才get event
+        loadUserJoin();
+        getEvent();
 
         commentLv = (ListView) findViewById(R.id.list_3comment);
         cmtAdapter =  new CommentAdapter(this, cmtList);
         commentLv.setAdapter(cmtAdapter);
         getComment();
     }
-
+    private Button.OnClickListener joinListener
+            = new Button.OnClickListener(){
+        @Override
+        public void onClick(View view){
+            if(joinBtn.getText().toString().equals("參加")){
+                joinBtn.setText("退出");
+                //Integer.toString
+                String curNum = numOfPeople.getText().toString();
+                String newNum = Integer.toString(Integer.parseInt(curNum)+1);
+                numOfPeople.setText(newNum);
+                progressDialog.show();
+                joinEvent();
+            }
+            else{
+                joinBtn.setText("參加");
+                String curNum = numOfPeople.getText().toString();
+                String newNum = Integer.toString(Integer.parseInt(curNum)-1);
+                numOfPeople.setText(newNum);
+                progressDialog.show();
+                exitEvent();
+            }
+        }
+    };
     private void getComment(){
         Map<String, String> params = new HashMap<String, String>();
         StringBuilder url = new StringBuilder(getString(R.string.rest_server_url));
@@ -112,8 +136,13 @@ public class ShowActivity extends Activity {
 
                 cmtList.clear();
                 int n = resources.size();
-                for(int i=n-1; i>n-4; i--)/*最下面的三則留言*/
-                    cmtList.add(resources.get(i));
+                if(n<=3)
+                    cmtList.addAll(resources);
+                else{
+                    for(int i=n-3; i<=n-1; i++)/*最下面的三則留言*/
+                        cmtList.add(resources.get(i));
+                }
+
                 progressDialog.dismiss();
                 //Toast.makeText(ShowActivity.this, "成功list所有留言",Toast.LENGTH_SHORT).show();
 
@@ -135,7 +164,7 @@ public class ShowActivity extends Activity {
     }
 
     private boolean checkUserJoin(){/*若user有參加該event 回傳true*/
-        return userJoinList.containsKey(Long.parseLong(eventId));
+        return userJoinMap.containsKey(Long.parseLong(eventId));
     }
     private void getEvent(){
         Map<String, String> header = new HashMap<>();
@@ -150,30 +179,31 @@ public class ShowActivity extends Activity {
                 eventHost.setText(resource.getPosterName());
                 eventContent.setText(resource.getDescription());
                 numOfPeople.setText(Integer.toString(resource.getJoinNum()));
-                progressDialog.dismiss();
+
 
                 if(checkUserJoin()){
                     joinBtn.setText("退出");
-                    joinBtn.setOnClickListener(new Button.OnClickListener(){
+                    /*joinBtn.setOnClickListener(new Button.OnClickListener(){
                         @Override
                         public void onClick(View view) {
                             progressDialog.show();
                             exitEvent();
                         }
-                    });
+                    });*/
                 }else{
                     joinBtn.setText("參加");
-                    joinBtn.setOnClickListener(new Button.OnClickListener(){
+                    /*joinBtn.setOnClickListener(new Button.OnClickListener(){
                         @Override
                         public void onClick(View view) {
                             progressDialog.show();
                             joinEvent();
                         }
-                    });
+                    });*/
                 }
                 Log.d(TAG, "event got:" + resource.getTitle());
                 //Toast.makeText(ShowActivity.this, "順利讀取活動",
                        // Toast.LENGTH_SHORT).show();
+                progressDialog.dismiss();
             }
 
             @Override
@@ -198,7 +228,7 @@ public class ShowActivity extends Activity {
         restMgr.postUniversal(Event.class,getString(R.string.rest_server_url)+"users/join-event",event,new RestManager.PostResourceListener() {
             @Override
             public void onResponse(int code, Map<String, String> headers) {
-                getEvent();
+                progressDialog.dismiss();
             }
 
             @Override
@@ -218,12 +248,11 @@ public class ShowActivity extends Activity {
         restMgr.deleteUniversal(Event.class,getString(R.string.rest_server_url)+"users/join-event/"+eventId,new RestManager.DeleteResourceListener() {
             @Override
             public void onResponse(int code, Map<String, String> headers) {
-                getEvent();
+                progressDialog.dismiss();
             }
 
             @Override
             public void onRedirect(int code, Map<String, String> headers, String url) {
-
             }
 
             @Override
@@ -263,8 +292,8 @@ public class ShowActivity extends Activity {
                                    List<Event> resources) {
                 //Toast.makeText(ShowActivity.this, "成功list",Toast.LENGTH_SHORT).show();
                 for(Event e : resources)
-                    userJoinList.put(e.getId(),true);
-                getEvent();
+                    userJoinMap.put(e.getId(),true);
+                //getEvent();
             }
 
             @Override
@@ -276,7 +305,7 @@ public class ShowActivity extends Activity {
             public void onError(String message, Throwable cause, int code,
                                 Map<String, String> headers) {
                 Log.d(this.getClass().getSimpleName(), "" + code + ": " + message);
-                Toast.makeText(ShowActivity.this, "無法list",Toast.LENGTH_SHORT).show();
+                Toast.makeText(ShowActivity.this, "無法讀取user參加的活動",Toast.LENGTH_SHORT).show();
             }
         }, null);
     }
@@ -289,7 +318,8 @@ public class ShowActivity extends Activity {
         int desiredWidth = MeasureSpec.makeMeasureSpec(listView.getWidth(), View.MeasureSpec.UNSPECIFIED);
         int totalHeight = 0;
         View view = null;
-        for (int i = 0; i < 3; i++) {
+        int n = listAdapter.getCount();
+        for (int i = 0; i < (n<=3 ? n:3) ; i++) {
             view = listAdapter.getView(i, view, listView);
             if (i == 0)
                 view.setLayoutParams(new ViewGroup.LayoutParams(desiredWidth, ViewGroup.LayoutParams.WRAP_CONTENT));
