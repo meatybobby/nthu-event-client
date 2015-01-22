@@ -3,6 +3,7 @@ package softwarestudio.douglas.nthu_event.client;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.util.Log;
@@ -10,6 +11,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListAdapter;
@@ -67,6 +69,17 @@ public class UserListActivity extends Activity {
         /*Intent intent = this.getIntent();
         Bundle bundle = intent.getExtras();
         eventId = bundle.getString("eventId");*/
+        userListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                //TODO 前往單一活動頁面
+                String fbId = ShowActivity.joinUserList.get(position).getFbId();
+                String url = "http://www.facebook.com/app_scoped_user_id/" + fbId;
+                Intent i = new Intent(Intent.ACTION_VIEW);
+                i.setData(Uri.parse(url));
+                startActivity(i);
+            }
+        });
 
     }
     @Override

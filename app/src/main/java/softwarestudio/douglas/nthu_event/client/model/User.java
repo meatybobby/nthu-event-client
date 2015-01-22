@@ -6,6 +6,7 @@ public class User extends Resource<Long> {
 
     private String fbAccessToken;
     private String name;
+    private String fbId;
 
     public User(String fbAccessToken) {
         this.fbAccessToken = fbAccessToken;
@@ -17,6 +18,13 @@ public class User extends Resource<Long> {
 
     public void setName(String name) {
         this.name = name;
+    }
+    public String getFbId() {
+        return fbId;
+    }
+
+    public void setFbId(String fbId) {
+        this.fbId = fbId;
     }
 
     public static String getCollectionName() {
