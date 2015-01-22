@@ -73,15 +73,6 @@
         </activity>
 
         <activity
-            android:name=".MyShowActivity"
-            android:label="@string/show_event"
-            android:parentActivityName="softwarestudio.douglas.nthu_event.client.MyPageActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="softwarestudio.douglas.nthu_event.client.MyPageActivity" />
-        </activity>
-
-        <activity
             android:name=".CommentActivity"
             android:label="留言"
             android:parentActivityName="softwarestudio.douglas.nthu_event.client.ShowActivity">
@@ -90,6 +81,17 @@
                 android:value="softwarestudio.douglas.nthu_event.client.ShowActivity" />
 
         </activity>
+
+        <activity
+            android:name=".UserListActivity"
+            android:label="參與者"
+            android:parentActivityName="softwarestudio.douglas.nthu_event.client.ShowActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="softwarestudio.douglas.nthu_event.client.ShowActivity" />
+
+        </activity>
+
 
 
 

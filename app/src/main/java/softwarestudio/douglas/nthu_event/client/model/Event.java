@@ -1,6 +1,7 @@
 package softwarestudio.douglas.nthu_event.client.model;
 
 import java.io.Serializable;
+import java.util.List;
 
 import softwarestudio.douglas.nthu_event.client.service.rest.model.Resource;
 
@@ -15,10 +16,9 @@ public class Event extends Resource<Long> implements Serializable {
     private String tag2;
     private String posterName;
     private long time;
-
-
     private long timeStamp;
     private int joinNum;
+    private List<User> joinUser;
 
     public String getTitle() {
         return title;
@@ -79,6 +79,13 @@ public class Event extends Resource<Long> implements Serializable {
     }
     public String getPosterName() {
         return posterName;
+    }
+    public List<User> getJoinUser() {
+        return joinUser;
+    }
+
+    public void setJoinUser(List<User> joinUser) {
+        this.joinUser = joinUser;
     }
 
     public void setPosterName(String posterName) {

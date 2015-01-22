@@ -29,6 +29,7 @@ import java.util.Map;
 import softwarestudio.douglas.nthu_event.client.adapter.CommentAdapter;
 import softwarestudio.douglas.nthu_event.client.model.Event;
 import softwarestudio.douglas.nthu_event.client.model.Comment;
+import softwarestudio.douglas.nthu_event.client.model.User;
 import softwarestudio.douglas.nthu_event.client.service.rest.RestManager;
 
 
@@ -45,9 +46,9 @@ public class ShowActivity extends Activity {
     private TextView numOfPeople;
     private String eventId;
     private Button joinBtn;
-
     private ListView commentLv;
     private ArrayList<Comment> cmtList = new ArrayList<Comment>();
+    public static List<User> joinUserList = new ArrayList<User>();
     private CommentAdapter cmtAdapter;
 
     private Map<Long,Boolean> userJoinMap;
@@ -73,6 +74,7 @@ public class ShowActivity extends Activity {
 
         joinBtn = (Button) findViewById(R.id.btn_join);
         Button commentBtn = (Button) findViewById(R.id.btn_comment);
+
         //Button bookmarkBtn = (Button) findViewById(R.id.btn_bookmark);
 
         userJoinMap = new HashMap<Long,Boolean>();
@@ -83,17 +85,24 @@ public class ShowActivity extends Activity {
                 commentEvent();
             }
         });
-       /* bookmarkBtn.setOnClickListener(new Button.OnClickListener(){
-            @Override
-            public void onClick(View view){
-                bookmarkEvent();
-            }
-        });*/
+
         joinBtn.setOnClickListener(joinListener);
 
         Intent intent = this.getIntent();
-        Bundle bundle = intent.getExtras();
+        final Bundle bundle = intent.getExtras();
         eventId = bundle.getString("eventId");
+
+        Button checkUserBtn = (Button) findViewById(R.id.btn_checkuser);
+        checkUserBtn.setOnClickListener(new Button.OnClickListener(){
+            @Override
+            public void onClick(View view){
+                Intent intent = new Intent(ShowActivity.this, UserListActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putString("eventId", eventId);
+                intent.putExtras(bundle);
+                startActivity(intent);
+            }
+        });
 
         progressDialog = new ProgressDialog(ShowActivity.this);
         progressDialog.setMessage(getString(R.string.info_wait));
@@ -203,7 +212,12 @@ public class ShowActivity extends Activity {
                 eventTag1.setText(resource.getTag1());
                 eventTag2.setText(resource.getTag2());
                 numOfPeople.setText(Integer.toString(resource.getJoinNum()));
+
+                joinUserList.clear();
+                joinUserList.addAll(resource.getJoinUser());
+
                 Log.d(TAG, "event got:" + resource.getTitle());
+
                 //Toast.makeText(ShowActivity.this, "順利讀取活動",
                        // Toast.LENGTH_SHORT).show();
                 progressDialog.dismiss();
@@ -223,7 +237,36 @@ public class ShowActivity extends Activity {
             }
         }, null);
     }
+    private void getEventAfterJoin(){
+        Map<String, String> header = new HashMap<>();
 
+        restMgr.getResource(Event.class, eventId, new RestManager.GetResourceListener<Event>() {
+            @Override
+            public void onResponse(int code, Map<String, String> headers, Event resource) {
+                joinUserList.clear();
+                joinUserList.addAll(resource.getJoinUser());
+
+                Log.d(TAG, "event got:" + resource.getTitle());
+
+                //Toast.makeText(ShowActivity.this, "順利讀取活動",
+                // Toast.LENGTH_SHORT).show();
+                progressDialog.dismiss();
+            }
+
+            @Override
+            public void onRedirect(int code, Map<String, String> headers, String url) {
+
+            }
+
+            @Override
+            public void onError(String message, Throwable cause, int code, Map<String, String> headers) {
+
+                Toast.makeText(ShowActivity.this, "無法讀取活動",
+                        Toast.LENGTH_SHORT).show();
+                progressDialog.dismiss();
+            }
+        }, null);
+    }
 
     private void joinEvent(){
         Event event=new Event();
@@ -235,7 +278,7 @@ public class ShowActivity extends Activity {
                 String curNum = numOfPeople.getText().toString();
                 String newNum = Integer.toString(Integer.parseInt(curNum)+1);
                 numOfPeople.setText(newNum);
-                progressDialog.dismiss();
+                getEventAfterJoin();
             }
 
             @Override
@@ -259,7 +302,8 @@ public class ShowActivity extends Activity {
                 String curNum = numOfPeople.getText().toString();
                 String newNum = Integer.toString(Integer.parseInt(curNum)-1);
                 numOfPeople.setText(newNum);
-                progressDialog.dismiss();
+                getEventAfterJoin();
+
             }
 
             @Override

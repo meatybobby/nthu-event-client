@@ -238,7 +238,7 @@ public class MyPageActivity extends FragmentActivity implements ActionBar.TabLis
             // TODO Auto-generated method stub
             super.onListItemClick(l, v, position, id);
             //Toast.makeText(getActivity(), "你按下"+arr[position], Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(getActivity(), MyShowActivity.class);
+            Intent intent = new Intent(getActivity(), ShowActivity.class);
             Event event = (Event) mEventAdapter.getItem(position);
             Log.d(TAG, "event clicked:" + event.getId().toString());
 
